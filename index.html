@@ -13,7 +13,11 @@
 </head>
     <body>
         <header>
-            <img id="menu" src="./assets/menu.svg" alt="">
+            <img 
+                id="menu" 
+                src="./assets/menu.svg" alt=""
+                onclick="DOM.toggleMenu()"
+            />
             <h1>Mark<img src="./assets/cart.svg" alt="">t</h1> 
         </header>
         
@@ -71,7 +75,7 @@
                     </section>                    
                 </div>    
                 
-                <a id="buy" href="">
+                <a id="buy" href="#">
                     + Nova despesa
                 </a>
                 
@@ -92,11 +96,11 @@
                             <td>03</td>
                             <td>R$ 15,00</td>
                             <td>
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/edit.svg" alt="editar item">
                                 </a>
                                 
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/remove.svg" alt="remover item">
                                 </a>
                             </td>
@@ -107,11 +111,11 @@
                             <td>03</td>
                             <td>R$ 1,65</td>
                             <td>
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/edit.svg" alt="editar item">
                                 </a>
                                 
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/remove.svg" alt="remover item">
                                 </a>
                             </td>
@@ -122,11 +126,11 @@
                             <td>04</td>
                             <td>R$ 12,00</td>
                             <td>
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/edit.svg" alt="editar item">
                                 </a>
                                 
-                                <a href="">
+                                <a href="#">
                                     <img src="./assets/remove.svg" alt="remover item">
                                 </a>
                             </td>
@@ -135,5 +139,6 @@
                 </table>
             </div>
         </main>
+        <script src="./scripts.js"></script>
     </body>
 </html>
