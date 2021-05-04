@@ -6,8 +6,9 @@
     --black-light: #3f3e3e;
     --red: #db0c0c;
     --blue: #1919cc;
+    --green-light: #0f0;
+    --green: #2bb42b;
 }
-
 
 *{
     box-sizing: border-box;
@@ -21,7 +22,7 @@ html{
     font-family: 'Roboto', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6, p, ul, li, span{
+h1, h2, h3, h4, h5, h6, p, ul, li, label, span{
     color: var(--black-light);
     font-weight: 400;
 }
@@ -211,10 +212,18 @@ table thead tr th{
 }
 
 table tbody tr td, table tbody tr td a img{
-    opacity: 0.7;
     font-weight: 300;
 }
-table td:hover, table img:hover{
+
+table tbody tr{
+    opacity: 0.7;
+}
+
+table tbody tr td, table tbody tr td a img{
+    font-weight: 300;
+}
+
+table tbody tr:hover, table img:hover{
     opacity: 1;
 }
 
@@ -226,4 +235,86 @@ table tbody tr td:last-child{
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+/* ==================== MODAL */
+.container-modal{
+    position: absolute;
+    z-index: 2;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: #00000099;
+}
+
+.modal{
+    width: 30rem;
+    height: 20rem;
+    border-radius: 0.25rem;
+    background-color: var(--bg-sidebar);
+}
+
+.modal-active{
+    display: none;
+}
+
+.modal a{
+    
+}
+
+.modal a img{
+    position: relative;
+    top: -7px;
+    right: -7px;
+    float: right;
+    display: block;
+    background: var(--bg-sidebar);
+    border-radius: 1rem;
+    border: 1px solid #00000033;
+    padding: 0.25rem;
+}
+
+.modal h2{
+    text-align: center;
+    margin-top: 10px;
+}
+
+#form-expense{
+    margin: 0 1.25rem;
+}
+
+#button-submit{
+    float: right;
+    
+    width: 50%;
+    padding: 0.8rem;
+    margin-top: 1.25rem;
+    
+    border-radius: 0.25rem;
+    border: 1px solid var(--green);
+    
+    color: var(--green);
+
+    cursor: pointer;
+}
+
+#button-submit:hover{
+    filter: brightness(0.97);
+}
+
+.fieldset{
+    margin-top: 0.5rem;
+}
+
+.fieldset input{
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
 }

@@ -73,7 +73,11 @@
                     </section>                    
                 </div>    
                 
-                <a id="buy" href="#">
+                <a 
+                    id="buy" 
+                    href="#"
+                    onclick="DOM.toggleModal()"
+                >
                     + Nova despesa
                 </a>
                 
@@ -137,6 +141,51 @@
                 </table>
             </div>
         </main>
+        
+        <div class="container-modal modal-active">
+            <div class="modal">
+                <a 
+                    href="#"
+                    onclick="DOM.toggleModal()"
+                >
+                    <img src="./assets/close.svg" alt="">
+                </a>
+
+                <h2>Nova despesa</h2>
+                <form id="form-expense">
+                    <div class="fieldset">
+                        <label class="sr-only">Descrição</label>
+                        <input 
+                            type="text" 
+                            id="description" 
+                            name="description"
+                        />
+                    </div>
+                    
+                    <div class="fieldset">
+                        <label class="sr-only">Quantidade</label>
+                        <input 
+                            type="number" 
+                            id="quantity" 
+                            name="quantity"
+                            step="1"
+                        />
+                    </div>
+                    
+                    <div class="fieldset">
+                        <label class="sr-only">Preço</label>
+                        <input 
+                            type="number" 
+                            id="price" 
+                            name="price"
+                            step="0.01"
+                        />
+                    </div>
+
+                    <button id="button-submit" type="submit">CADASTRAR</button>
+                </form>
+            </div>
+        </div>
         <script src="./scripts.js"></script>
     </body>
 </html>
