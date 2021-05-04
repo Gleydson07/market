@@ -19,16 +19,11 @@
 html{
     font-size: 93.75%;
     font-family: 'Roboto', sans-serif;
-
 }
 
 h1, h2, h3, h4, h5, h6, p, ul, li, span{
     color: var(--black-light);
     font-weight: 400;
-}
-
-@media(min-width: 700px){
-
 }
 
 body{
@@ -65,9 +60,9 @@ main{
 
 #sidebar{
     flex-direction: column;
-    width: 200px;
+    min-width: 200px;
     padding: 10px;
-    height: calc(100vh - 4rem);
+    min-height: 100%;
     background-color: var(--bg-sidebar);
     box-shadow: 0px 0px 5px var(--heading);  
     margin-right: 20px; 
@@ -101,27 +96,55 @@ main{
 }
 
 #container{
-    width: 800px;
     height: calc(100vh - 4rem);
     margin: auto;
 }
 
 #sections{
-    display: flex;
+    display: grid;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 2.2rem;
 }
 
 .card{
     height: 12.5rem;
     width: 22rem;
 
-    margin-top: 1.56rem;
     padding: 0.625rem;
+    margin-bottom: 10px;
     border-radius: 0.25rem;
 
     background-color: var(--bg-sidebar);
+}
+
+@media (max-width: 700px){
+    #sidebar{
+        position: absolute;
+        z-index: 1;
+    }
+    .card{
+        min-width: 100%;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 700px){
+    html{
+        font-size: 87.5%;
+    }
+
+    #sections{
+        display: flex;
+    }
+
+    .card:first-child{
+        margin-right: 0.8rem;
+    }
+
+    .card:last-child{
+        margin-left: 0.8rem;
+    }
 }
 
 .content-card{
