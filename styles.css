@@ -1,0 +1,191 @@
+:root{
+    --bg: #e7e7e9;
+    --bg-sidebar: #f2f2f2;
+    --bg-header: #d021e7;
+    --heading: #b3aeae;
+    --black-light: #3f3e3e;
+    --red: #db0c0c;
+    --blue: #1919cc;
+}
+
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+html{
+    font-size: 93.75%;
+    font-family: 'Roboto', sans-serif;
+
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, li, span{
+    color: var(--black-light);
+    font-weight: 400;
+}
+
+@media(min-width: 700px){
+
+}
+
+body{
+    background-color: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+#menu{
+    position: absolute;
+    left: 10px;
+    width: 48px;
+    cursor: pointer;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem; 
+    background-color: var(--bg-header);
+}
+
+header h1{
+    display: flex;
+    color: var(--bg-sidebar);
+}
+
+main{
+    display: flex;
+}
+
+#sidebar{
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    padding: 10px;
+    height: calc(100vh - 4rem);
+    background-color: var(--bg-sidebar);
+    box-shadow: 0px 0px 5px var(--heading);
+
+    position: absolute;
+    left: -200px;
+}
+
+#sidebar h2{
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 10px 0 15px 0;
+    color: var(--bg-header);
+}
+
+#sidebar a{
+    font-weight: 300;
+    text-decoration: none;
+    line-height: 2;
+}
+
+#container{
+    width: 800px;
+    margin: auto;
+}
+
+#sections{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card{
+    height: 12.5rem;
+    width: 21.875rem;
+
+    margin-top: 1.56rem;
+    padding: 0.625rem;
+    border-radius: 0.25rem;
+
+    background-color: var(--bg-sidebar);
+}
+
+.content-card{
+    margin-top: 20px;
+}
+
+.total-items{
+    margin-top: 0.625rem;
+    text-align: center;
+    line-height: 1.5;
+    background-color: var(--bg-header);
+    border-radius: 0.25rem;
+}
+
+.total-items h2, .total-items h4{
+    color: var(--bg-sidebar);
+}
+
+.item{
+    display: flex;
+    justify-content: space-between;
+    line-height: 1.5;
+    opacity: 0.7;
+}
+
+.content-card h3{
+    opacity: 0.9;
+}
+
+.content-card span{
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 300;
+    opacity: 0.7;
+    margin-bottom: 5px;
+}
+
+#buy{
+    display: inline-block;
+    margin: 15px 0;
+    padding: 5px 10px;
+    border: 1px solid var(--bg-header);
+    border-radius: 1rem;
+    transition: color, 0.5s;
+}
+
+#buy:hover{
+    color: var(--bg-header);
+}
+
+table{
+    padding: 5px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--bg-sidebar);
+    border-radius: 0.25rem;
+}
+
+table thead tr th{
+    font-weight: 400;
+    color: var(--black-light);
+    border-bottom: 1px dashed var(--heading);
+}
+
+table tbody tr td, table tbody tr td a img{
+    opacity: 0.7;
+    font-weight: 300;
+}
+table td:hover, table img:hover{
+    opacity: 1;
+}
+
+table tbody tr td:first-child, table thead tr th:first-child{
+    text-align: left;
+}
+
+table tbody tr td:last-child{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

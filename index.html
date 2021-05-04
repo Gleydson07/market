@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Market</title>
+</head>
+    <body>
+        <header>
+            <img id="menu" src="./assets/menu.svg" alt="">
+            <h1>Mark<img src="./assets/cart.svg" alt="">t</h1> 
+        </header>
+        
+        <main >
+            <nav id="sidebar">
+                <h2>Movimentações</h2>
+                <a href="#">Janeiro de 2021</a>
+                <a href="#">Fevereiro de 2021</a>
+                <a href="#">Março de 2021</a>
+                <a href="#">Abril de 2021</a>
+            </nav>
+
+            <div id="container">
+                <div id="sections">
+                    <section class="card">
+                        <h3>Mês atual</h3>
+                        <div class="content-card">
+                            <ul class="item">
+                                <ul>Número de produtos:</ul>
+                                <ul>20</ul>
+                            </ul>
+                            <ul class="item">
+                                <ul>Maior quantidade:</ul>
+                                <ul>Sabão em pó</ul>
+                            </ul>
+                            <ul class="item">
+                                <ul>Maior valor:</ul>
+                                <ul>Carne</ul>
+                            </ul>
+                            <ul class="total-items">
+                                <h4>Total em compras:</h4>
+                                <h2>R$ 650,00</h2>
+                            </ul>
+                        </div>
+                    </section>
+                    <section class="card">
+                        <h3>Estatísticas</h3>
+                        <div class="content-card">
+                            <ul class="item">
+                                <ul>Ranking de gastos</ul>
+                                <ul>4ºlugar</ul>
+                            </ul>
+                            <span>(quanto menor o gasto, melhor colocado você será)</span>
+
+                            <ul class="item">
+                                <ul>Mês de maior gasto:</ul>
+                                <ul>Janeiro de 2021</ul>
+                            </ul>                            
+                            
+                            <ul class="item">
+                                <ul>Mês de menor gasto:</ul>
+                                <ul>Fevereiro de 2021</ul>
+                            </ul>    
+                        </div>
+                    </section>                    
+                </div>    
+                
+                <a id="buy" href="">
+                    + Nova despesa
+                </a>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="description">Descrição</th>
+                            <th id="price">Preço</th>
+                            <th id="quantity">Quantidade</th>
+                            <th id="total">Total</th>
+                            <th id="options">Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Feijão</td>
+                            <td>R$ 5,00</td>
+                            <td>03</td>
+                            <td>R$ 15,00</td>
+                            <td>
+                                <a href="">
+                                    <img src="./assets/edit.svg" alt="editar item">
+                                </a>
+                                
+                                <a href="">
+                                    <img src="./assets/remove.svg" alt="remover item">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sal</td>
+                            <td>R$ 0,55</td>
+                            <td>03</td>
+                            <td>R$ 1,65</td>
+                            <td>
+                                <a href="">
+                                    <img src="./assets/edit.svg" alt="editar item">
+                                </a>
+                                
+                                <a href="">
+                                    <img src="./assets/remove.svg" alt="remover item">
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Arroz</td>
+                            <td>R$ 3,00</td>
+                            <td>04</td>
+                            <td>R$ 12,00</td>
+                            <td>
+                                <a href="">
+                                    <img src="./assets/edit.svg" alt="editar item">
+                                </a>
+                                
+                                <a href="">
+                                    <img src="./assets/remove.svg" alt="remover item">
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </body>
+</html>
