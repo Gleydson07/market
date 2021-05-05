@@ -76,9 +76,9 @@ const expenses = [
                 price: 0.50,
             },
             {
-                description: "Aromatizante de lavanda 50ml",
+                description: "Desodorante dove",
                 quantity: 3,
-                price: 6.55,
+                price: 3.55,
             },
         ]
     },
@@ -92,7 +92,7 @@ const expenses = [
                 price: 0.50,
             },
             {
-                description: "Aromatizante de lavanda 50ml",
+                description: "Aromatizante 50ml",
                 quantity: 3,
                 price: 6.55,
             },
@@ -131,6 +131,63 @@ const Toggle = {
     },
 }
 
+const resolveDataCard = {
+    resolveCurrentMonth(expense){
+        return expense.month+' de '+expense.year;
+    },
+
+    resolveNumOfProducts(expense){
+        return expense.expenses.length;
+    },
+
+    resolveBigQuantityProduct(expense){
+        let product = {
+            quantityMaxima: 0,
+            description: ''
+        }
+        expense.expenses.map(item => {      
+            item.quantity > product.quantityMaxima &&
+                (product.quantityMaxima = item.quantity, 
+                product.description = item.description)
+        })
+        return `${product.description} (${product.quantityMaxima})`;
+    },
+
+    resolveHighPrice(expense){
+        let product = {
+            highPrice: 0,
+            description: ''
+        }
+        expense.expenses.map(item => {      
+            item.price > product.highPrice &&
+                (product.highPrice = item.price, 
+                product.description = item.description)
+        })
+        return `${product.description} (${product.highPrice})`;
+    },
+
+    resolveTotalOfMonth(expense){
+        return (expense.expenses.reduce((oldValue, actualValue) => oldValue + (actualValue.price * actualValue.quantity), 0)).toFixed(2)
+    }
+}
+
+const dataCard = {
+    currentMonth: document.getElementById('current-month'),
+    numOfProducts: document.getElementById('num-of-products'),
+    bigQuantityProduct: document.getElementById('big-quantity-product'),
+    highPrice: document.getElementById('high-price'),
+    totalOfMonth: document.getElementById('total-of-month'),
+
+    getDataCurrentMonth(expense){
+        dataCard.currentMonth.innerHTML = resolveDataCard.resolveCurrentMonth(expense);
+        dataCard.numOfProducts.innerHTML = resolveDataCard.resolveNumOfProducts(expense);
+        dataCard.bigQuantityProduct.innerHTML = resolveDataCard.resolveBigQuantityProduct(expense);
+        dataCard.highPrice.innerHTML = resolveDataCard.resolveHighPrice(expense);
+        dataCard.totalOfMonth.innerHTML = resolveDataCard.resolveTotalOfMonth(expense);        
+    }
+
+}
+
 const Utility = {
     description: document.getElementById('description'),
     quantity: document.getElementById('quantity'),
@@ -138,33 +195,29 @@ const Utility = {
 }
 
 const DOM = {
-
     expensesContainer: document.querySelector('#body-expenses'),
     sideBarContainer: document.querySelector('#sidebar'),
     
     addItemsMenuBar(data){
-            const a = document.createElement(`a`);
-
-            a.innerHTML = `${data.month+' de '+data.year}`;
-
-            a.setAttribute('href', "#");
-            a.setAttribute('onclick', `App.loadForm("${data.month}", ${data.year})`);
-
-            DOM.sideBarContainer.appendChild(a);
+        const a = document.createElement(`a`);
+        a.innerHTML = `${data.month+' de '+data.year}`;
+        a.setAttribute('href', "#");
+        a.setAttribute('onclick', `App.loadData("${data.month}", ${data.year})`);
+        DOM.sideBarContainer.appendChild(a);
     },
 
     addExpense(expense){
         const tr = document.createElement('tr');
         tr.innerHTML = DOM.innerHTMLExpenses(expense);
         DOM.expensesContainer.appendChild(tr);
-    },
+},
 
     innerHTMLExpenses(expense){
         const html = `
             <td>${expense.description}</td>
             <td>${expense.quantity}</td>
             <td>${expense.price}</td>
-            <td>${expense.price*expense.quantity}</td>
+            <td>${(expense.price*expense.quantity).toFixed(2)}</td>
             <td>
                 <a href="#">
                     <img src="./assets/edit.svg" alt="editar item">
@@ -182,33 +235,29 @@ const DOM = {
     clearExpenses() {
         DOM.expensesContainer.innerHTML = '';
     },
-
-
 }
 
 const App = {
     init(){
         expenses.reverse().forEach(element => {
             DOM.addItemsMenuBar(element);
-        })        
+        })
+
+        App.loadData(expenses[0].month, expenses[0].year);
     },
 
-    loadForm(month, year){
-        DOM.clearExpenses();
-        const response = expenses.find(expense => (expense.month === month && expense.year === year))
-        response.expenses.forEach(expense => {
-            DOM.addExpense(expense)
-        });
+    filteredData(month, year){
+        const response = expenses.find(expense => (expense.month === month && expense.year === year));
+        return response;
     },
 
-    loadCardCurrentMonth(month, year){
-        const response = expenses.find(expense => (expense.month === month && expense.year === year))
-        response.expenses.forEach(expense => {
-            DOM.addExpense(expense)
-        });
-    }
+    loadData(month, year){
+        DOM.clearExpenses();   
+        const expense = App.filteredData(month, year);
 
-
+        expense.expenses.forEach(item => DOM.addExpense(item));
+        dataCard.getDataCurrentMonth(expense);
+    },
 }
 
 App.init();
