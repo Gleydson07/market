@@ -14,7 +14,7 @@
             <img 
                 id="menu" 
                 src="./assets/menu.svg" alt=""
-                onclick="DOM.toggleMenu()"
+                onclick="Toggle.toggleMenu()"
             />
             <h1>Mark<img src="./assets/cart.svg" alt="">t</h1> 
         </header>
@@ -22,10 +22,6 @@
         <main >
             <nav id="sidebar">
                 <h2>Movimentações</h2>
-                <a href="#">Janeiro de 2021</a>
-                <a href="#">Fevereiro de 2021</a>
-                <a href="#">Março de 2021</a>
-                <a href="#">Abril de 2021</a>
             </nav>
 
             <div id="container">
@@ -76,7 +72,7 @@
                 <a 
                     id="buy" 
                     href="#"
-                    onclick="DOM.toggleModal()"
+                    onclick="Toggle.toggleModal()"
                 >
                     + Nova despesa
                 </a>
@@ -85,58 +81,14 @@
                     <thead>
                         <tr>
                             <th id="description">Descrição</th>
-                            <th id="price">Preço</th>
                             <th id="quantity">Quantidade</th>
+                            <th id="price">Preço</th>
                             <th id="total">Total</th>
                             <th id="options">Opções</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Feijão</td>
-                            <td>R$ 5,00</td>
-                            <td>03</td>
-                            <td>R$ 15,00</td>
-                            <td>
-                                <a href="#">
-                                    <img src="./assets/edit.svg" alt="editar item">
-                                </a>
-                                
-                                <a href="#">
-                                    <img src="./assets/remove.svg" alt="remover item">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sal</td>
-                            <td>R$ 0,55</td>
-                            <td>03</td>
-                            <td>R$ 1,65</td>
-                            <td>
-                                <a href="#">
-                                    <img src="./assets/edit.svg" alt="editar item">
-                                </a>
-                                
-                                <a href="#">
-                                    <img src="./assets/remove.svg" alt="remover item">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Arroz</td>
-                            <td>R$ 3,00</td>
-                            <td>04</td>
-                            <td>R$ 12,00</td>
-                            <td>
-                                <a href="#">
-                                    <img src="./assets/edit.svg" alt="editar item">
-                                </a>
-                                
-                                <a href="#">
-                                    <img src="./assets/remove.svg" alt="remover item">
-                                </a>
-                            </td>
-                        </tr>
+                    <tbody id="body-expenses">
+                        
                     </tbody>
                 </table>
             </div>
@@ -146,7 +98,7 @@
             <div class="modal">
                 <a 
                     href="#"
-                    onclick="DOM.toggleModal()"
+                    onclick="Toggle.toggleModal()"
                 >
                     <img src="./assets/close.svg" alt="">
                 </a>
