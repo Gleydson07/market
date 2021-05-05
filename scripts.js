@@ -131,6 +131,12 @@ const Toggle = {
     },
 }
 
+const Utility = {
+    description: document.getElementById('description'),
+    quantity: document.getElementById('quantity'),
+    price: document.getElementById('price'),
+}
+
 const DOM = {
 
     expensesContainer: document.querySelector('#body-expenses'),
@@ -139,8 +145,8 @@ const DOM = {
     addItemsMenuBar(data){
             const a = document.createElement(`a`);
 
-            a.innerHTML = `${data.month+' de '+data.year}`
-            
+            a.innerHTML = `${data.month+' de '+data.year}`;
+
             a.setAttribute('href', "#");
             a.setAttribute('onclick', `App.loadForm("${data.month}", ${data.year})`);
 
@@ -152,13 +158,6 @@ const DOM = {
         tr.innerHTML = DOM.innerHTMLExpenses(expense);
         DOM.expensesContainer.appendChild(tr);
     },
-    
-    // innerHTMLMonthsAndYears(data){
-    //     const html = `
-    //         <a onclick="App.init(${data})" >${data.month+" de "+data.year}</a>
-    //     `
-    //     return html
-    // },
 
     innerHTMLExpenses(expense){
         const html = `
@@ -180,6 +179,10 @@ const DOM = {
         return html
     },
 
+    clearExpenses() {
+        DOM.expensesContainer.innerHTML = '';
+    },
+
 
 }
 
@@ -191,6 +194,14 @@ const App = {
     },
 
     loadForm(month, year){
+        DOM.clearExpenses();
+        const response = expenses.find(expense => (expense.month === month && expense.year === year))
+        response.expenses.forEach(expense => {
+            DOM.addExpense(expense)
+        });
+    },
+
+    loadCardCurrentMonth(month, year){
         const response = expenses.find(expense => (expense.month === month && expense.year === year))
         response.expenses.forEach(expense => {
             DOM.addExpense(expense)
