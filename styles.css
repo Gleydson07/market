@@ -72,7 +72,7 @@ main{
     animation-duration: 1s;
 }
 
-.off{
+.active{
     display: none;
 }
 
@@ -145,6 +145,10 @@ main{
 
     .card:last-child{
         margin-left: 0.8rem;
+    }
+
+    .active{
+        display: none;
     }
 }
 
@@ -309,12 +313,25 @@ table tbody tr td:last-child{
 }
 
 .fieldset{
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
 }
 
 .fieldset input{
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.65rem;
     border: none;
     border-radius: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

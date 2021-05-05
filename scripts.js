@@ -6,32 +6,32 @@ const expenses = [
             {
                 description: "Feijão",
                 quantity: 5,
-                price: 8.5,
+                price: 850,
             },
             {
                 description: "Arroz",
                 quantity: 3,
-                price: 6,
+                price: 600,
             },
             {
                 description: "Leite",
                 quantity: 2,
-                price: 2.5,
+                price: 250,
             },
             {
                 description: "Peito de frango",
                 quantity: 1,
-                price: 13.75,
+                price: 1375,
             },
             {
                 description: "Biscoto doce",
                 quantity: 5,
-                price: 2.55,
+                price: 255,
             },
             {
                 description: "Creme dental",
                 quantity: 2,
-                price: 4.50,
+                price: 450,
             },
         ]
     },
@@ -42,27 +42,27 @@ const expenses = [
             {
                 description: "Queijo ralado",
                 quantity: 2,
-                price: 3,
+                price: 300,
             },
             {
                 description: "Macarrão instatâneo",
                 quantity: 30,
-                price: 1.99,
+                price: 199,
             },
             {
                 description: "Leite",
                 quantity: 3,
-                price: 2.75,
+                price: 275,
             },
             {
                 description: "Peixe fresco",
                 quantity: 5,
-                price: 5.55,
+                price: 555,
             },
             {
                 description: "Açucar",
                 quantity: 5,
-                price: 2.55,
+                price: 255,
             },
         ]
     },
@@ -73,13 +73,18 @@ const expenses = [
             {
                 description: "Papel Higiênico",
                 quantity: 8,
-                price: 0.50,
+                price: 50,
             },
             {
                 description: "Desodorante dove",
                 quantity: 3,
-                price: 3.55,
+                price: 355,
             },
+            {
+                description: "Carne bovina",
+                quantity: 12,
+                price: 2200
+            }
         ]
     },
     {
@@ -89,38 +94,40 @@ const expenses = [
             {
                 description: "Papel Higiênico",
                 quantity: 8,
-                price: 0.50,
+                price: 150,
             },
             {
                 description: "Aromatizante 50ml",
                 quantity: 3,
-                price: 6.55,
+                price: 655,
             },
             {
                 description: "Sabão em pó",
                 quantity: 6,
-                price: 3.35,
+                price: 335,
             },
             {
                 description: "Sabão em pedra",
                 quantity: 8,
-                price: 0.45,
+                price: 45,
             },
             {
                 description: "Água sanitária",
                 quantity: 2,
-                price: 4.50,
+                price: 450,
             },
         ]
     },
 ]
+
+let periodExpense = [];
 
 const Toggle = {    
     toggleMenu(){
         document
             .getElementById('sidebar')
             .classList
-            .toggle('off');
+            .toggle('active');
     },
 
     toggleModal(){
@@ -131,72 +138,141 @@ const Toggle = {
     },
 }
 
-const resolveDataCard = {
-    resolveCurrentMonth(expense){
-        return expense.month+' de '+expense.year;
+const Resolve = {
+    currentMonth(){
+        return periodExpense.month+' de '+periodExpense.year;
     },
 
-    resolveNumOfProducts(expense){
-        return expense.expenses.length;
+    numOfProducts(){
+        return Utility.formatQuantity(periodExpense.expenses.length);
     },
 
-    resolveBigQuantityProduct(expense){
+    bigQuantityProduct(){
         let product = {
             quantityMaxima: 0,
             description: ''
         }
-        expense.expenses.map(item => {      
+        periodExpense.expenses.map(item => {      
             item.quantity > product.quantityMaxima &&
                 (product.quantityMaxima = item.quantity, 
                 product.description = item.description)
         })
-        return `${product.description} (${product.quantityMaxima})`;
+        return `${product.description} (${Utility.formatQuantity(product.quantityMaxima)})`;
     },
 
-    resolveHighPrice(expense){
+    highPrice(){
         let product = {
             highPrice: 0,
             description: ''
         }
-        expense.expenses.map(item => {      
+        periodExpense.expenses.map(item => {      
             item.price > product.highPrice &&
                 (product.highPrice = item.price, 
                 product.description = item.description)
         })
-        return `${product.description} (${product.highPrice})`;
+        return `${product.description} (${Utility.formatCurrency(product.highPrice)})`;
     },
 
-    resolveTotalOfMonth(expense){
-        return (expense.expenses.reduce((oldValue, actualValue) => oldValue + (actualValue.price * actualValue.quantity), 0)).toFixed(2)
-    }
+    totalOfMonth(){
+        return Utility.formatCurrency(
+            periodExpense.expenses.reduce(
+                (oldValue, actualValue) => 
+                oldValue + (actualValue.price * actualValue.quantity), 0
+            )
+        )
+    },
+
+    ordenedArray(){
+        let arrayTotal = [];
+        expenses.map((item) => {            
+            arrayTotal.push({
+                month: item.month,
+                year: item.year,
+                totalMonth: item.expenses.reduce((oldValue, currentValue) => oldValue + (currentValue.quantity * currentValue.price), 0)
+            })
+        })
+
+        arrayTotal.sort((posOne, posTwo) => {
+            return posOne.totalMonth - posTwo.totalMonth;
+        })
+
+        return arrayTotal;
+    },
+
+    rankingPosition(){
+        const arrayExpenses = Resolve.ordenedArray();
+
+        const data = arrayExpenses.findIndex(item => (periodExpense.month === item.month && periodExpense.year === item.year));
+        return Utility.formatQuantity(data+1);
+    },
+
+    highExpenseMonth(){
+        const arrayExpenses = Resolve.ordenedArray();
+        return `${arrayExpenses[arrayExpenses.length-1].month} de ${arrayExpenses[arrayExpenses.length-1].year}`;
+    },
+
+    lowerExpenseMonth(){
+        const arrayExpenses = Resolve.ordenedArray();
+        return `${arrayExpenses[0].month} de ${arrayExpenses[0].year}`;
+    },
 }
 
 const dataCard = {
+    // Month Card
     currentMonth: document.getElementById('current-month'),
     numOfProducts: document.getElementById('num-of-products'),
     bigQuantityProduct: document.getElementById('big-quantity-product'),
     highPrice: document.getElementById('high-price'),
     totalOfMonth: document.getElementById('total-of-month'),
+    
+    // Statistics
+    rankingPosition: document.getElementById('ranking-position'),
+    highExpenseMonth: document.getElementById('high-expense-month'),
+    lowerExpenseMonth: document.getElementById('lower-expense-month'),    
 
-    getDataCurrentMonth(expense){
-        dataCard.currentMonth.innerHTML = resolveDataCard.resolveCurrentMonth(expense);
-        dataCard.numOfProducts.innerHTML = resolveDataCard.resolveNumOfProducts(expense);
-        dataCard.bigQuantityProduct.innerHTML = resolveDataCard.resolveBigQuantityProduct(expense);
-        dataCard.highPrice.innerHTML = resolveDataCard.resolveHighPrice(expense);
-        dataCard.totalOfMonth.innerHTML = resolveDataCard.resolveTotalOfMonth(expense);        
+    getDataCurrentMonth(){
+        // Month Card
+        dataCard.currentMonth.innerHTML = Resolve.currentMonth();
+        dataCard.numOfProducts.innerHTML = Resolve.numOfProducts();
+        dataCard.bigQuantityProduct.innerHTML = Resolve.bigQuantityProduct();
+        dataCard.highPrice.innerHTML = Resolve.highPrice();
+        dataCard.totalOfMonth.innerHTML = Resolve.totalOfMonth();      
+        
+        //Statistics
+        dataCard.rankingPosition.innerHTML = Resolve.rankingPosition();
+        dataCard.highExpenseMonth.innerHTML = Resolve.highExpenseMonth();
+        dataCard.lowerExpenseMonth.innerHTML = Resolve.lowerExpenseMonth();
     }
 
 }
 
 const Utility = {
-    description: document.getElementById('description'),
-    quantity: document.getElementById('quantity'),
-    price: document.getElementById('price'),
+    formatQuantity(quantity){
+        return quantity < 10 ? ("00" + quantity).slice(-2).replace(".",",") : quantity;
+    },
+
+    formatCurrencyToSave(currency){
+        return currency*100;
+    },
+
+    formatCurrency(value){
+        return (value/100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })
+    },
+}
+
+const orderToExpense = {
+    add(expense){
+        console.log(expense)
+    }
 }
 
 const DOM = {
     expensesContainer: document.querySelector('#body-expenses'),
     sideBarContainer: document.querySelector('#sidebar'),
+    formExpense: document.getElementById('form-expense'),
     
     addItemsMenuBar(data){
         const a = document.createElement(`a`);
@@ -210,14 +286,14 @@ const DOM = {
         const tr = document.createElement('tr');
         tr.innerHTML = DOM.innerHTMLExpenses(expense);
         DOM.expensesContainer.appendChild(tr);
-},
+    },
 
     innerHTMLExpenses(expense){
         const html = `
             <td>${expense.description}</td>
-            <td>${expense.quantity}</td>
-            <td>${expense.price}</td>
-            <td>${(expense.price*expense.quantity).toFixed(2)}</td>
+            <td>${Utility.formatQuantity(expense.quantity)}</td>
+            <td>${Utility.formatCurrency(expense.price)}</td>
+            <td>${Utility.formatCurrency((expense.price*expense.quantity))}</td>
             <td>
                 <a href="#">
                     <img src="./assets/edit.svg" alt="editar item">
@@ -235,6 +311,49 @@ const DOM = {
     clearExpenses() {
         DOM.expensesContainer.innerHTML = '';
     },
+
+    clearFormExpense(){
+        DOM.formExpense.innerHTML = "";
+    }
+}
+
+const Form = {
+    description: document.getElementById('description'),
+    quantity: document.getElementById('quantity'),
+    price: document.getElementById('price'),
+
+
+    getValues(){
+        return {
+            description: Form.description.value,
+            quantity: Form.quantity.value,
+            price: Form.price.value
+        }
+    },
+
+    validateFields(){
+        const { description, quantity, price } = Form.getValues();
+
+        if(description.trim() === "" 
+            || quantity.trim() === ""
+            || price.trim() === ""){            
+            throw new Error("Favor preencher todos os campos.");
+        }
+    },
+
+    //Listener?
+    submit(event){
+        event.preventDefault();
+        console.log(Form.getValues())
+        try {
+            Form.validateFields();
+            orderToExpense.add(Form.getValues());
+            Toggle.toggleModal();
+        } catch (error) {
+            alert(error.message)
+        }
+    }
+
 }
 
 const App = {
@@ -247,16 +366,15 @@ const App = {
     },
 
     filteredData(month, year){
-        const response = expenses.find(expense => (expense.month === month && expense.year === year));
-        return response;
+        periodExpense = expenses.find(expense => (expense.month === month && expense.year === year));
     },
 
     loadData(month, year){
         DOM.clearExpenses();   
-        const expense = App.filteredData(month, year);
+        App.filteredData(month, year);
 
-        expense.expenses.forEach(item => DOM.addExpense(item));
-        dataCard.getDataCurrentMonth(expense);
+        periodExpense.expenses.forEach(item => DOM.addExpense(item));
+        dataCard.getDataCurrentMonth(periodExpense);
     },
 }
 

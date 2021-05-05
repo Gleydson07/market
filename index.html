@@ -31,19 +31,19 @@
                         <div class="content-card">
                             <ul class="item">
                                 <ul>Número de produtos:</ul>
-                                <ul id="num-of-products">20</ul>
+                                <ul id="num-of-products">0</ul>
                             </ul>
                             <ul class="item">
                                 <ul>Maior quantidade:</ul>
-                                <ul id="big-quantity-product">Sabão em pó</ul>
+                                <ul id="big-quantity-product"></ul>
                             </ul>
                             <ul class="item">
                                 <ul>Maior preço:</ul>
-                                <ul id="high-price">Carne</ul>
+                                <ul id="high-price"></ul>
                             </ul>
                             <ul class="total-items">
                                 <h4>Total em compras:</h4>
-                                <h2 id="total-of-month">R$ 650,00</h2>
+                                <h2 id="total-of-month">R$ 0,00</h2>
                             </ul>
                         </div>
                     </section>
@@ -52,18 +52,18 @@
                         <div class="content-card">
                             <ul class="item">
                                 <ul>Ranking de gastos</ul>
-                                <ul>4ºlugar</ul>
+                                <ul id="ranking-position">4ºlugar</ul>
                             </ul>
                             <span>(quanto menor o gasto, melhor colocado você será)</span>
 
                             <ul class="item">
                                 <ul>Mês de maior gasto:</ul>
-                                <ul>Janeiro de 2021</ul>
+                                <ul id="high-expense-month">Janeiro de 2021</ul>
                             </ul>                            
                             
                             <ul class="item">
                                 <ul>Mês de menor gasto:</ul>
-                                <ul>Fevereiro de 2021</ul>
+                                <ul id="lower-expense-month">Fevereiro de 2021</ul>
                             </ul>    
                         </div>
                     </section>                    
@@ -104,37 +104,46 @@
                 </a>
 
                 <h2>Nova despesa</h2>
-                <form id="form-expense">
+                <form id="form-expense" onsubmit="Form.submit(event)">
                     <div class="fieldset">
                         <label class="sr-only">Descrição</label>
                         <input 
+                            id="description"
                             type="text" 
-                            id="description" 
                             name="description"
+                            placeholder="Descrição"
+                            autocomplete="off"
                         />
                     </div>
                     
                     <div class="fieldset">
                         <label class="sr-only">Quantidade</label>
                         <input 
-                            type="number" 
                             id="quantity" 
+                            type="number" 
                             name="quantity"
                             step="1"
+                            placeholder="Quantidade"
                         />
                     </div>
                     
                     <div class="fieldset">
                         <label class="sr-only">Preço</label>
                         <input 
-                            type="number" 
                             id="price" 
+                            type="number" 
                             name="price"
                             step="0.01"
+                            placeholder="Preço"
                         />
                     </div>
 
-                    <button id="button-submit" type="submit">CADASTRAR</button>
+                    <button 
+                        id="button-submit" 
+                        onclick="orderToExpense.add()"
+                    >
+                        CADASTRAR
+                    </button>
                 </form>
             </div>
         </div>
