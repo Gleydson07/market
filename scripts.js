@@ -252,7 +252,7 @@ const Utility = {
     },
 
     formatCurrencyToSave(currency){
-        return currency*100;
+        return Number(currency)*100;
     },
 
     formatCurrency(value){
@@ -264,9 +264,25 @@ const Utility = {
 }
 
 const orderToExpense = {
-    add(expense){
-        console.log(expense)
+    add(data){
+        const {month, year, description, quantity, price} = data;
+
+        console.log(month, year)
+
+        expenses.map((item, index) => {
+            if(month === item.month && year === item.year){
+                expenses[index].expenses.push({
+                    description, 
+                    quantity, 
+                    price
+                })
+
+            }
+        })
+        
+        App.loadData(month, year)
     }
+
 }
 
 const DOM = {
@@ -311,43 +327,49 @@ const DOM = {
     clearExpenses() {
         DOM.expensesContainer.innerHTML = '';
     },
-
-    clearFormExpense(){
-        DOM.formExpense.innerHTML = "";
-    }
 }
 
 const Form = {
-    description: document.getElementById('description'),
-    quantity: document.getElementById('quantity'),
-    price: document.getElementById('price'),
-
+    description: document.querySelector('.fieldset #description'),
+    quantity: document.querySelector('.fieldset #quantity'),
+    price: document.querySelector('.fieldset #price'),
 
     getValues(){
-        return {
-            description: Form.description.value,
-            quantity: Form.quantity.value,
-            price: Form.price.value
-        }
-    },
+        const month = periodExpense.month;
+        const year = String(periodExpense.year);
+        const description = Form.description.value;
+        const quantity = Form.quantity.value;
+        const price = Form.price.value;
 
-    validateFields(){
-        const { description, quantity, price } = Form.getValues();
-
-        if(description.trim() === "" 
+        if(month.trim() === "" || year.trim() === ""
+            || description.trim() === ""
             || quantity.trim() === ""
-            || price.trim() === ""){            
-            throw new Error("Favor preencher todos os campos.");
+            || price.trim() === ""){
+                throw new Error("Por favor preencha todos os campos.");
+        }
+
+        return {
+            month,
+            year: Number(year),
+            description,
+            quantity: Number(quantity),
+            price: Utility.formatCurrencyToSave(Number(price))            
         }
     },
 
-    //Listener?
+    clearFieldset(){
+        Form.description.value = "";
+        Form.quantity.value = "";
+        Form.price.value = "";
+    },
+    
+    //Listener
     submit(event){
         event.preventDefault();
-        console.log(Form.getValues())
+
         try {
-            Form.validateFields();
             orderToExpense.add(Form.getValues());
+            Form.clearFieldset();
             Toggle.toggleModal();
         } catch (error) {
             alert(error.message)
