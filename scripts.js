@@ -130,11 +130,18 @@ const Toggle = {
             .toggle('active');
     },
 
-    toggleModal(){
+    toggleModalExpense(){
         document
-            .querySelector('.container-modal')
+            .querySelector('#container-modal-expense')
             .classList
-            .toggle('modal-active');
+            .toggle('modal-active-expense');
+    },
+
+    toggleModalMonth(){
+        document
+            .querySelector('#container-modal-month')
+            .classList
+            .toggle('modal-active-month');
     },
 }
 
@@ -364,13 +371,13 @@ const Form = {
     },
     
     //Listener
-    submit(event){
+    submitExpense(event){
         event.preventDefault();
 
         try {
             orderToExpense.add(Form.getValues());
             Form.clearFieldset();
-            Toggle.toggleModal();
+            Toggle.toggleModalExpense();
         } catch (error) {
             alert(error.message)
         }
