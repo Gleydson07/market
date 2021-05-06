@@ -16,12 +16,22 @@
                 src="./assets/menu.svg" alt=""
                 onclick="Toggle.toggleMenu()"
             />
-            <h1>Mark<img src="./assets/cart.svg" alt="">t</h1> 
+            <h1>Mark<img src="./assets/cart.svg" alt="r">t</h1> 
         </header>
         
         <main >
             <nav id="sidebar">
-                <h2>Movimentações</h2>
+                <div id="new-month"> 
+                    <h2>Movimentações</h2>
+                    <a href="#">
+                        <span>Novo mês</span>
+                        <img src="./assets/add.svg" alt="novo movimento">
+                    </a>
+                </div>
+                <div id="items-sidebar">
+
+                </div>
+
             </nav>
 
             <div id="container">
@@ -147,6 +157,10 @@
                     </button>
                 </form>
             </div>
+        </div>
+
+        <div class="container-modal modal-active">
+            <div class="modal"></div>
         </div>
         <script src="./scripts.js"></script>
     </body>

@@ -287,7 +287,7 @@ const orderToExpense = {
 
 const DOM = {
     expensesContainer: document.querySelector('#body-expenses'),
-    sideBarContainer: document.querySelector('#sidebar'),
+    sideBarContainer: document.querySelector('#items-sidebar'),
     formExpense: document.getElementById('form-expense'),
     
     addItemsMenuBar(data){
