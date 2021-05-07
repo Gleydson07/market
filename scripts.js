@@ -1,4 +1,5 @@
-const expenses = [
+// Array de dados
+const dataExpenses = [
     {
         month: 1,
         year: 2021,
@@ -32,6 +33,17 @@ const expenses = [
                 description: "Creme dental",
                 quantity: 2,
                 price: 450,
+            },
+        ]
+    },
+    {
+        month: 3,
+        year: 2020,
+        expenses:[
+            {
+                description: "Café",
+                quantity: 50,
+                price: 850,
             },
         ]
     },
@@ -120,8 +132,10 @@ const expenses = [
     },
 ]
 
+// Período(mês/ano) selecionado para ser exibido na tela
 let periodExpense = [];
 
+// Alterna a sidebar o modalMonth e o modalExpense entre visíveis e não visíveis
 const Toggle = {
     toggleMenu(){
         document
@@ -145,11 +159,14 @@ const Toggle = {
     },
 }
 
+// Funções para renderizar o conteúdo dos cards
 const Resolve = {
+//     //Retorna por extenso o mês e ano selecionado
     currentMonth(){
         return Utility.convertMonth(periodExpense.month)+' de '+periodExpense.year;
     },
 
+//     // Exibe a quantidade de produtos do período selecionado 
     numOfProducts(){
         return Utility.formatQuantity(periodExpense.expenses.length);
     },
@@ -191,7 +208,7 @@ const Resolve = {
 
     ordenedArray(){
         let arrayTotal = [];
-        expenses.map((item) => {            
+        dataExpenses.map((item) => {            
             arrayTotal.push({
                 month: item.month,
                 year: item.year,
@@ -278,6 +295,28 @@ const Utility = {
         const month = months.find((item, index) => index === (Number(value)-1));
 
         return month;
+    },
+
+    reverseListOfMonth(){
+        let newArray = [];
+        
+        dataExpenses.map(expense => {
+            newArray.push(
+                String(expense.year)+String(expense.month)
+            )
+        })
+        
+        newArray.sort((beforePosition, afterPosition) => {
+            return afterPosition - beforePosition
+        })
+
+        const ordened = newArray.map(date => {
+            return {
+                year: Number(date.substr(0,4)),
+                month: Number(date.slice(4))
+            }
+        })
+        return ordened;
     }
 }
 
@@ -285,9 +324,9 @@ const orderToExpense = {
     add(data){
         const {month, year, description, quantity, price} = data;
 
-        expenses.map((item, index) => {
+        dataExpenses.map((item, index) => {
             if(month === item.month && year === item.year){
-                expenses[index].expenses.push({
+                dataExpenses[index].expenses.push({
                     description, 
                     quantity, 
                     price
@@ -304,7 +343,7 @@ const orderToExpense = {
 const listOfMonths = {
 
     dataExists(month, year){
-        const exists = expenses.find(item => (item.month === month && item.year === year));
+        const exists = dataExpenses.find(item => (item.month === month && item.year === year));
 
         return exists;
     },
@@ -315,12 +354,11 @@ const listOfMonths = {
             throw new Error("O período selecionado já existe")
         }
         DOM.clearItemsMenuBar();
-        expenses.push({
+        dataExpenses.push({
             month,
-            year
+            year,
+            expenses: []
         })
-        
-        App.loadItemMenuBar();
     }
 
 }
@@ -334,7 +372,7 @@ const DOM = {
         const a = document.createElement(`a`);
         a.innerHTML = `${Utility.convertMonth(data.month)+' de '+data.year}`;
         a.setAttribute('href', "#");
-        a.setAttribute('onclick', `App.loadData("${data.month}", ${data.year})`);
+        a.setAttribute('onclick', `App.loadData(${data.month}, ${data.year})`);
         DOM.sideBarContainer.appendChild(a);
     },
 
@@ -374,11 +412,15 @@ const DOM = {
 }
 
 const FormMonth = {
-    month: document.querySelector('#month'),
+    month: document.querySelector('.fieldset #month'),
+
+    clearFieldset(){
+        return FormMonth.innerHTML = ""
+    },
 
     getValues(){
         const monthAndYear = FormMonth.month.value;
-        const [year, month] = value.split('-');(monthAndYear);
+        const [year, month] = monthAndYear.split('-');
 
         return { month:Number(month), year:Number(year) }
     },
@@ -388,6 +430,11 @@ const FormMonth = {
         try {
             const {month, year} = FormMonth.getValues();
             listOfMonths.add(month, year);
+            FormMonth.clearFieldset();
+            Toggle.toggleModalMonth();
+            App.loadData(month, year);
+            App.loadItemMenuBar();
+            Utility.reverseListOfMonth();
         } catch (error) {
             alert(error.message);
         }
@@ -446,17 +493,25 @@ const FormExpense = {
 const App = {
     init(){
         App.loadItemMenuBar();
-        App.loadData(expenses[0].month, expenses[0].year);
+        App.loadData(dataExpenses[0].month, dataExpenses[0].year);
     },
 
-    loadItemMenuBar(){
-        expenses.reverse().map(element => {
+    loadItemMenuBar(){        
+        Utility.reverseListOfMonth().map(element => {
             DOM.addItemsMenuBar(element);
         })
     },
 
     filteredData(month, year){
-        periodExpense = expenses.find(expense => (expense.month === month && expense.year === year));
+        dataExpenses.forEach(data => {
+            if(data.month === month && data.year === year){
+                periodExpense = data;
+            }
+        });
+
+        // if(!periodExpense){
+        //     throw new Error("Ainda não existem lançamentos neste mês")
+        // }
     },
 
     loadData(month, year){
