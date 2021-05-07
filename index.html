@@ -41,15 +41,15 @@
                         <div class="content-card">
                             <ul class="item">
                                 <ul>Número de produtos:</ul>
-                                <ul id="num-of-products">0</ul>
+                                <ul class="data-card" id="num-of-products">0</ul>
                             </ul>
                             <ul class="item">
                                 <ul>Maior quantidade:</ul>
-                                <ul id="big-quantity-product"></ul>
+                                <ul class="data-card" id="big-quantity-product"></ul>
                             </ul>
                             <ul class="item">
                                 <ul>Maior preço:</ul>
-                                <ul id="high-price"></ul>
+                                <ul class="data-card" id="high-price"></ul>
                             </ul>
                             <ul class="total-items">
                                 <h4>Total em compras:</h4>
@@ -62,24 +62,24 @@
                         <div class="content-card">
                             <ul class="item">
                                 <ul>Ranking de gastos</ul>
-                                <ul id="ranking-position">4ºlugar</ul>
+                                <ul class="data-card" id="ranking-position">4ºlugar</ul>
                             </ul>
                             <span>(quanto menor o gasto, melhor colocado você será)</span>
 
                             <ul class="item">
                                 <ul>Mês de maior gasto:</ul>
-                                <ul id="high-expense-month">Janeiro de 2021</ul>
+                                <ul class="data-card" id="high-expense-month">Janeiro de 2021</ul>
                             </ul>                            
                             
                             <ul class="item">
                                 <ul>Mês de menor gasto:</ul>
-                                <ul id="lower-expense-month">Fevereiro de 2021</ul>
+                                <ul class="data-card" id="lower-expense-month">Fevereiro de 2021</ul>
                             </ul>    
                         </div>
                     </section>                    
                 </div>   
                 
-                <a onclick="Toggle.toggleModalExpense()" id="buy" href="#">
+                <a  onclick="Toggle.toggleModalExpense()" id="buy" href="#">
                     <img src="./assets/add.svg" alt="nova despesa">
                     <span>Nova despesa</span>
                 </a>
@@ -111,7 +111,7 @@
                 </a>
 
                 <h2>Nova despesa</h2>
-                <form id="form-expense" onsubmit="Form.submitExpense(event)">
+                <form id="form-expense" onsubmit="FormExpense.submitExpense(event)">
                     <div class="fieldset">
                         <label class="sr-only">Descrição</label>
                         <input 
@@ -146,7 +146,8 @@
                     </div>
 
                     <button 
-                        id="button-submit" 
+                        id="button-submit-expense"
+                        class="button-submit"
                         type="submit"
                         onclick=""
                     >
@@ -166,7 +167,7 @@
                 </a>
 
                 <h2>Nova Movimentação</h2>
-                <form id="form-expense" onsubmit="Form.submitMonth(event)">
+                <form id="form-month" onsubmit="FormMonth.submitMonth(event)">
                     <div class="fieldset">
                         <label class="" for="month">Mês</label>
                         <input 
@@ -179,7 +180,8 @@
                         />
                     </div>
                     <button 
-                        id="button-submit" 
+                        id="button-submit-month" 
+                        class="button-submit"
                         type="submit"
                         onclick=""
                     >

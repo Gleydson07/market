@@ -1,6 +1,6 @@
 const expenses = [
     {
-        month: "Janeiro",
+        month: 1,
         year: 2021,
         expenses:[
             {
@@ -36,7 +36,7 @@ const expenses = [
         ]
     },
     {
-        month: "Fevereiro",
+        month: 2,
         year: 2021,
         expenses:[
             {
@@ -67,7 +67,7 @@ const expenses = [
         ]
     },
     {
-        month: "Março",
+        month: 3,
         year: 2021,
         expenses:[
             {
@@ -88,7 +88,7 @@ const expenses = [
         ]
     },
     {
-        month: "Abril",
+        month: 4,
         year: 2021,
         expenses:[
             {
@@ -122,7 +122,7 @@ const expenses = [
 
 let periodExpense = [];
 
-const Toggle = {    
+const Toggle = {
     toggleMenu(){
         document
             .getElementById('sidebar')
@@ -147,7 +147,7 @@ const Toggle = {
 
 const Resolve = {
     currentMonth(){
-        return periodExpense.month+' de '+periodExpense.year;
+        return Utility.convertMonth(periodExpense.month)+' de '+periodExpense.year;
     },
 
     numOfProducts(){
@@ -215,12 +215,12 @@ const Resolve = {
 
     highExpenseMonth(){
         const arrayExpenses = Resolve.ordenedArray();
-        return `${arrayExpenses[arrayExpenses.length-1].month} de ${arrayExpenses[arrayExpenses.length-1].year}`;
+        return `${Utility.convertMonth(arrayExpenses[arrayExpenses.length-1].month)} de ${arrayExpenses[arrayExpenses.length-1].year}`;
     },
 
     lowerExpenseMonth(){
         const arrayExpenses = Resolve.ordenedArray();
-        return `${arrayExpenses[0].month} de ${arrayExpenses[0].year}`;
+        return `${Utility.convertMonth(arrayExpenses[0].month)} de ${arrayExpenses[0].year}`;
     },
 }
 
@@ -268,13 +268,22 @@ const Utility = {
             currency: "BRL"
         })
     },
+
+    convertMonth(value){
+        const months = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        const month = months.find((item, index) => index === (Number(value)-1));
+
+        return month;
+    }
 }
 
 const orderToExpense = {
     add(data){
         const {month, year, description, quantity, price} = data;
-
-        console.log(month, year)
 
         expenses.map((item, index) => {
             if(month === item.month && year === item.year){
@@ -292,6 +301,30 @@ const orderToExpense = {
 
 }
 
+const listOfMonths = {
+
+    dataExists(month, year){
+        const exists = expenses.find(item => (item.month === month && item.year === year));
+
+        return exists;
+    },
+
+    add(month, year){
+        const exists = listOfMonths.dataExists(month, year);
+        if(exists){
+            throw new Error("O período selecionado já existe")
+        }
+        DOM.clearItemsMenuBar();
+        expenses.push({
+            month,
+            year
+        })
+        
+        App.loadItemMenuBar();
+    }
+
+}
+
 const DOM = {
     expensesContainer: document.querySelector('#body-expenses'),
     sideBarContainer: document.querySelector('#items-sidebar'),
@@ -299,7 +332,7 @@ const DOM = {
     
     addItemsMenuBar(data){
         const a = document.createElement(`a`);
-        a.innerHTML = `${data.month+' de '+data.year}`;
+        a.innerHTML = `${Utility.convertMonth(data.month)+' de '+data.year}`;
         a.setAttribute('href', "#");
         a.setAttribute('onclick', `App.loadData("${data.month}", ${data.year})`);
         DOM.sideBarContainer.appendChild(a);
@@ -334,19 +367,44 @@ const DOM = {
     clearExpenses() {
         DOM.expensesContainer.innerHTML = '';
     },
+
+    clearItemsMenuBar() {
+        DOM.sideBarContainer.innerHTML = '';
+    },
 }
 
-const Form = {
+const FormMonth = {
+    month: document.querySelector('#month'),
+
+    getValues(){
+        const monthAndYear = FormMonth.month.value;
+        const [year, month] = value.split('-');(monthAndYear);
+
+        return { month:Number(month), year:Number(year) }
+    },
+
+    submitMonth(event){        
+        event.preventDefault();
+        try {
+            const {month, year} = FormMonth.getValues();
+            listOfMonths.add(month, year);
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+}
+
+const FormExpense = {
     description: document.querySelector('.fieldset #description'),
     quantity: document.querySelector('.fieldset #quantity'),
     price: document.querySelector('.fieldset #price'),
 
     getValues(){
-        const month = periodExpense.month;
+        const month = String(periodExpense.month);
         const year = String(periodExpense.year);
-        const description = Form.description.value;
-        const quantity = Form.quantity.value;
-        const price = Form.price.value;
+        const description = FormExpense.description.value;
+        const quantity = FormExpense.quantity.value;
+        const price = FormExpense.price.value;
 
         if(month.trim() === "" || year.trim() === ""
             || description.trim() === ""
@@ -356,7 +414,7 @@ const Form = {
         }
 
         return {
-            month,
+            month: Number(month),
             year: Number(year),
             description,
             quantity: Number(quantity),
@@ -365,9 +423,9 @@ const Form = {
     },
 
     clearFieldset(){
-        Form.description.value = "";
-        Form.quantity.value = "";
-        Form.price.value = "";
+        FormExpense.description.value = "";
+        FormExpense.quantity.value = "";
+        FormExpense.price.value = "";
     },
     
     //Listener
@@ -375,23 +433,26 @@ const Form = {
         event.preventDefault();
 
         try {
-            orderToExpense.add(Form.getValues());
-            Form.clearFieldset();
+            orderToExpense.add(FormExpense.getValues());
+            FormExpense.clearFieldset();
             Toggle.toggleModalExpense();
         } catch (error) {
             alert(error.message)
         }
-    }
+    },
 
 }
 
 const App = {
     init(){
-        expenses.reverse().forEach(element => {
+        App.loadItemMenuBar();
+        App.loadData(expenses[0].month, expenses[0].year);
+    },
+
+    loadItemMenuBar(){
+        expenses.reverse().map(element => {
             DOM.addItemsMenuBar(element);
         })
-
-        App.loadData(expenses[0].month, expenses[0].year);
     },
 
     filteredData(month, year){
@@ -401,7 +462,7 @@ const App = {
     loadData(month, year){
         DOM.clearExpenses();   
         App.filteredData(month, year);
-
+        
         periodExpense.expenses.forEach(item => DOM.addExpense(item));
         dataCard.getDataCurrentMonth(periodExpense);
     },
