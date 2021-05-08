@@ -40,54 +40,7 @@ const Toggle = {
 const dataExpenses = [
     {
         month: 1,
-        year: 2021,
-        expenses:[
-            {
-                description: "Feijão",
-                quantity: 5,
-                price: 850,
-            },
-            {
-                description: "Arroz",
-                quantity: 3,
-                price: 600,
-            },
-            {
-                description: "Leite",
-                quantity: 2,
-                price: 250,
-            },
-            {
-                description: "Peito de frango",
-                quantity: 1,
-                price: 1375,
-            },
-            {
-                description: "Biscoto doce",
-                quantity: 5,
-                price: 255,
-            },
-            {
-                description: "Creme dental",
-                quantity: 2,
-                price: 450,
-            },
-        ]
-    },
-    {
-        month: 3,
-        year: 2020,
-        expenses:[
-            {
-                description: "Café",
-                quantity: 50,
-                price: 850,
-            },
-        ]
-    },
-    {
-        month: 2,
-        year: 2021,
+        year: 2000,
         expenses:[
             {
                 description: "Queijo ralado",
@@ -114,12 +67,6 @@ const dataExpenses = [
                 quantity: 5,
                 price: 255,
             },
-        ]
-    },
-    {
-        month: 3,
-        year: 2021,
-        expenses:[
             {
                 description: "Papel Higiênico",
                 quantity: 8,
@@ -159,42 +106,6 @@ const dataExpenses = [
                 description: "Água sanitária",
                 quantity: 2,
                 price: 450,
-            },
-        ]
-    },
-    {
-        month: 4,
-        year: 2021,
-        expenses:[
-            {
-                description: "Papel Higiênico",
-                quantity: 8,
-                price: 150,
-            },
-            {
-                description: "Aromatizante 50ml",
-                quantity: 3,
-                price: 655,
-            },
-            {
-                description: "Sabão em pó",
-                quantity: 6,
-                price: 335,
-            },
-            {
-                description: "Sabão em pedra",
-                quantity: 8,
-                price: 45,
-            },
-            {
-                description: "Água sanitária",
-                quantity: 2,
-                price: 450,
-            },
-            {
-                description: "Leite condensado",
-                quantity: 1,
-                price: 250,
             },
         ]
     },
@@ -371,8 +282,21 @@ const dataCard = {
 
 // CRUD de despesas
 const orderToExpense = {
+    validateData(data){
+        const {month, year, description, quantity, price} = data;
+
+        if(description.trim() === "" || !quantity || !price){
+            throw new Error("Favor preencher todos os campos.")
+        }
+
+        if(!month || !year ){
+            throw new Error("Selecione um item válido na aba de movimentações.")
+        }
+    },
+
     add(data){
         const {month, year, description, quantity, price} = data;
+        orderToExpense.validateData(data);
 
         dataExpenses.map((item, index) => {
             if(month === item.month && year === item.year){
@@ -386,6 +310,8 @@ const orderToExpense = {
         })
         
         App.loadData(month, year)
+        console.log(data)
+        console.log(dataExpenses)
     }
 
 }
@@ -401,15 +327,19 @@ const listOfMonths = {
 
     add(month, year){
         const exists = listOfMonths.dataExists(month, year);
+
         if(exists){
+            FormMonth.clearFieldset();
             throw new Error("O período selecionado já existe")
         }
+
         DOM.clearItemsMenuBar();
         dataExpenses.push({
             month,
             year,
             expenses: []
         })
+
     }
 
 }
@@ -498,18 +428,11 @@ const FormExpense = {
     price: document.querySelector('.fieldset #price'),
 
     getValues(){
-        const month = String(periodExpense.month);
-        const year = String(periodExpense.year);
+        const month = periodExpense.month;
+        const year = periodExpense.year;
         const description = FormExpense.description.value;
         const quantity = FormExpense.quantity.value;
         const price = FormExpense.price.value;
-
-        if(month.trim() === "" || year.trim() === ""
-            || description.trim() === ""
-            || quantity.trim() === ""
-            || price.trim() === ""){
-                throw new Error("Por favor preencha todos os campos.");
-        }
 
         return {
             month: Number(month),
