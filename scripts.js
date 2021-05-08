@@ -20,6 +20,20 @@ const Toggle = {
             .classList
             .toggle('modal-active-month');
     },
+
+    toggleFormAndPagination(hasData){
+        if(!hasData){
+            document
+                .querySelector('#table-pagination')
+                .classList
+                .add('table-pagination-active')
+         }else{
+            document
+            .querySelector('#table-pagination')
+            .classList
+            .remove('table-pagination-active')
+         }
+    },
 }
 
 // Array de dados
@@ -146,31 +160,6 @@ const dataExpenses = [
                 quantity: 2,
                 price: 450,
             },
-            {
-                description: "Papel Higiênico",
-                quantity: 8,
-                price: 150,
-            },
-            {
-                description: "Aromatizante 50ml",
-                quantity: 3,
-                price: 655,
-            },
-            {
-                description: "Sabão em pó",
-                quantity: 6,
-                price: 335,
-            },
-            {
-                description: "Sabão em pedra",
-                quantity: 8,
-                price: 45,
-            },
-            {
-                description: "Água sanitária",
-                quantity: 2,
-                price: 450,
-            },
         ]
     },
     {
@@ -210,6 +199,9 @@ const dataExpenses = [
         ]
     },
 ]
+
+// Itens por página
+const itemsPerPage = 10;
 
 // Período(mês/ano) selecionado para ser exibido na tela
 let periodExpense = [];
@@ -449,11 +441,7 @@ const DOM = {
             <td>${Utility.formatQuantity(expense.quantity)}</td>
             <td>${Utility.formatCurrency(expense.price)}</td>
             <td>${Utility.formatCurrency((expense.price*expense.quantity))}</td>
-            <td>
-                <a href="#">
-                    <img src="./assets/edit.svg" alt="editar item">
-                </a>
-                
+            <td>                
                 <a href="#">
                     <img src="./assets/remove.svg" alt="remover item">
                 </a>
@@ -477,7 +465,7 @@ const FormMonth = {
     month: document.querySelector('.fieldset #month'),
 
     clearFieldset(){
-        return FormMonth.innerHTML = ""
+        FormMonth.month.value = ""
     },
 
     getValues(){
@@ -553,6 +541,7 @@ const FormExpense = {
 
 }
 
+// Configuração de paginação
 const Pagination = {
     paginationContainer: document.getElementById('pagination'),
     currentPage: document.querySelector('#currentPage h4'),
@@ -565,8 +554,8 @@ const Pagination = {
     listExpensesByPage(page){
         DOM.clearExpenses();
         Pagination.setCurrentPage(page);
-        const firstItem = (page*5)-5; // 1 = 1*5 - 4 = 1
-        const lastItem = (page*5); // 1 = 1*5 = 5  
+        const firstItem = (page*itemsPerPage)-itemsPerPage; // 1 = 1*5 - 4 = 1
+        const lastItem = (page*itemsPerPage); // 1 = 1*5 = 5  
         const data = periodExpense.expenses.slice(firstItem, lastItem);
 
         data.map((expense, index) => {
@@ -585,17 +574,15 @@ const Pagination = {
     },
     
     innerHTMLPagination(page){
-        const h4 = document.createElement('a');
-        h4.innerHTML = page;
-        h4.setAttribute('onclick', `Pagination.listExpensesByPage(${page})`);
-        Pagination.paginationContainer.appendChild(h4);
+        const a = document.createElement('a');
+        a.innerHTML = page;       
+        a.setAttribute('onclick', `Pagination.listExpensesByPage(${page})`);
+        Pagination.paginationContainer.appendChild(a);
     },
 }
 
 // Inicialização do App com as classes necessárias
 const App = {
-    itemPerPage: 5,
-
     init(){
         App.loadItemMenuBar();
         const arrayOrdered = Utility.reverseListOfMonth();
@@ -603,6 +590,7 @@ const App = {
     },
 
     loadItemMenuBar(){
+        FormMonth.clearFieldset();
         Utility.reverseListOfMonth().map(element => {
             DOM.addItemsMenuBar(element);
         })
@@ -621,7 +609,7 @@ const App = {
     },
     
     pagination(){
-        const pages = Math.ceil(periodExpense.expenses.length/App.itemPerPage);
+        const pages = Math.ceil(periodExpense.expenses.length/itemsPerPage);
         Pagination.clearPagination();
         Pagination.addPagination(pages);
         Pagination.listExpensesByPage(1);
@@ -630,7 +618,8 @@ const App = {
     loadData(month, year){
         DOM.clearExpenses();
         App.filteredData(month, year);
-
+        Toggle.toggleFormAndPagination(periodExpense.expenses.length);
+        
         App.pagination();
         dataCard.getDataCurrentMonth(periodExpense);
     },

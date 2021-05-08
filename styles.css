@@ -79,6 +79,14 @@ main{
     display: none;
 }
 
+.table-pagination-active{
+    display: none;
+}
+
+.itemPaginationDisabled{
+    
+}
+
 @keyframes sidebar-on{
     from{transform: translate(-100px, 0);}
     to{transform: translate(0px, 0);}
@@ -100,6 +108,15 @@ main{
 
 #new-month a{
     display: flex;
+}
+
+#items-sidebar a{
+    font-weight: 300;
+    transition: 0.05s;
+}
+#items-sidebar a:hover{
+    color: var(--black-light);
+    font-weight: 400;
 }
 
 #container a{
@@ -169,20 +186,26 @@ main{
 }
 
 @media (max-width: 700px){
+    html{
+        font-size: 87.5%;
+    }
     #sidebar{
         position: absolute;
         z-index: 1;
     }
-    .card{
-        min-width: 100%;
+    #container{
+        width: 80%;
+    }
+
+    .card, table{
+        width: 80vw;
+        min-width: 350px;
         margin: 10px auto;
     }
+
 }
 
 @media (min-width: 700px){
-    html{
-        font-size: 87.5%;
-    }
 
     #sections{
         display: flex;
@@ -237,11 +260,11 @@ main{
 }
 
 table{
-    padding: 5px;
-    width: 100%;
+    padding: 0.8rem;
     text-align: center;
     background-color: var(--bg-sidebar);
     border-radius: 0.25rem;
+    width: 100%;
 }
 
 table thead tr th{

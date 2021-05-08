@@ -16,7 +16,7 @@
                 src="./assets/menu.svg" alt=""
                 onclick="Toggle.toggleMenu()"
             />
-            <h1>Mark<img src="./assets/cart.svg" alt="r">t</h1> 
+            <h1><img src="./assets/cart.svg" alt="cart">&nbspMercado</h1>
         </header>
         
         <main >
@@ -62,18 +62,18 @@
                         <div class="content-card">
                             <ul class="item">
                                 <ul>Ranking de gastos</ul>
-                                <ul class="data-card" id="ranking-position">0º lugar</ul>
+                                <ul class="data-card" id="ranking-position"></ul>
                             </ul>
                             <span>(quanto menor o gasto, melhor sua colocação)</span>
 
                             <ul class="item">
                                 <ul>Mês de maior gasto:</ul>
-                                <ul class="data-card" id="high-expense-month">Janeiro de 2000</ul>
+                                <ul class="data-card" id="high-expense-month"></ul>
                             </ul>                            
                             
                             <ul class="item">
                                 <ul>Mês de menor gasto:</ul>
-                                <ul class="data-card" id="lower-expense-month">Fevereiro de 2000</ul>
+                                <ul class="data-card" id="lower-expense-month"></ul>
                             </ul>    
                         </div>
                     </section>                    
@@ -83,29 +83,31 @@
                     <img src="./assets/add.svg" alt="nova despesa">
                     <span>Nova despesa</span>
                 </a>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th id="description">Descrição</th>
-                            <th id="quantity">Quantidade</th>
-                            <th id="price">Preço</th>
-                            <th id="total">Total</th>
-                            <th id="options">Opções</th>
-                        </tr>
-                    </thead>
-                    <tbody id="body-expenses">
-                        
-                    </tbody>
-                </table>
-                <div id="dataPagination">
-                    <div id="currentPage">
-                        <p>Página atual: </p>
-                        <h4>0</h4>
-                    </div>
-                    <div id="pagination">
-                    </div>
 
+                <div id="table-pagination" >                
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="description">Descrição</th>
+                                <th id="quantity">Quantidade</th>
+                                <th id="price">Preço</th>
+                                <th id="total">Total</th>
+                                <th id="options">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody id="body-expenses">
+                            
+                        </tbody>
+                    </table>
+                    <div id="dataPagination">
+                        <div id="currentPage">
+                            <p>Página atual: </p>
+                            <h4>0</h4>
+                        </div>
+                        <div id="pagination">
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </main>
