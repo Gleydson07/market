@@ -36,80 +36,93 @@ const Toggle = {
     },
 }
 
-// Array de dados
-const dataExpenses = [
-    {
-        month: 1,
-        year: 2000,
-        expenses:[
-            {
-                description: "Queijo ralado",
-                quantity: 2,
-                price: 300,
-            },
-            {
-                description: "Macarrão instatâneo",
-                quantity: 30,
-                price: 199,
-            },
-            {
-                description: "Leite",
-                quantity: 3,
-                price: 275,
-            },
-            {
-                description: "Peixe fresco",
-                quantity: 5,
-                price: 555,
-            },
-            {
-                description: "Açucar",
-                quantity: 5,
-                price: 255,
-            },
-            {
-                description: "Papel Higiênico",
-                quantity: 8,
-                price: 50,
-            },
-            {
-                description: "Desodorante dove",
-                quantity: 3,
-                price: 355,
-            },
-            {
-                description: "Carne bovina",
-                quantity: 12,
-                price: 2200
-            },
-            {
-                description: "Papel Higiênico",
-                quantity: 8,
-                price: 150,
-            },
-            {
-                description: "Aromatizante 50ml",
-                quantity: 3,
-                price: 655,
-            },
-            {
-                description: "Sabão em pó",
-                quantity: 6,
-                price: 335,
-            },
-            {
-                description: "Sabão em pedra",
-                quantity: 8,
-                price: 45,
-            },
-            {
-                description: "Água sanitária",
-                quantity: 2,
-                price: 450,
-            },
-        ]
+// Dados no localStorage
+const Storage = {
+    get(){
+        return JSON.parse(localStorage.getItem("@commerce:expenses"))
     },
-]
+
+    set(expenses){
+        localStorage.setItem("@commerce:expenses", JSON.stringify(expenses));
+    }
+}
+
+// Array de dados
+const dataExpenses = Storage.get();
+
+//[
+//     {
+//         month: 1,
+//         year: 2000,
+//         expenses:[
+//             {
+//                 description: "Queijo ralado",
+//                 quantity: 2,
+//                 price: 300,
+//             },
+//             {
+//                 description: "Macarrão instatâneo",
+//                 quantity: 30,
+//                 price: 199,
+//             },
+//             {
+//                 description: "Leite",
+//                 quantity: 3,
+//                 price: 275,
+//             },
+//             {
+//                 description: "Peixe fresco",
+//                 quantity: 5,
+//                 price: 555,
+//             },
+//             {
+//                 description: "Açucar",
+//                 quantity: 5,
+//                 price: 255,
+//             },
+//             {
+//                 description: "Papel Higiênico",
+//                 quantity: 8,
+//                 price: 50,
+//             },
+//             {
+//                 description: "Desodorante dove",
+//                 quantity: 3,
+//                 price: 355,
+//             },
+//             {
+//                 description: "Carne bovina",
+//                 quantity: 12,
+//                 price: 2200
+//             },
+//             {
+//                 description: "Papel Higiênico",
+//                 quantity: 8,
+//                 price: 150,
+//             },
+//             {
+//                 description: "Aromatizante 50ml",
+//                 quantity: 3,
+//                 price: 655,
+//             },
+//             {
+//                 description: "Sabão em pó",
+//                 quantity: 6,
+//                 price: 335,
+//             },
+//             {
+//                 description: "Sabão em pedra",
+//                 quantity: 8,
+//                 price: 45,
+//             },
+//             {
+//                 description: "Água sanitária",
+//                 quantity: 2,
+//                 price: 450,
+//             },
+//         ]
+//     },
+// ]
 
 // Itens por página
 const itemsPerPage = 10;
@@ -145,7 +158,6 @@ const Utility = {
 
     reverseListOfMonth(){
         let newArray = [];
-        
         dataExpenses.map(expense => {
             newArray.push(
                 String(expense.year)+String(expense.month)
@@ -310,8 +322,6 @@ const orderToExpense = {
         })
         
         App.loadData(month, year)
-        console.log(data)
-        console.log(dataExpenses)
     }
 
 }
@@ -339,7 +349,7 @@ const listOfMonths = {
             year,
             expenses: []
         })
-
+        Storage.set(dataExpenses);
     }
 
 }
@@ -412,6 +422,7 @@ const FormMonth = {
             listOfMonths.add(month, year);
             FormMonth.clearFieldset();
             Toggle.toggleModalMonth();
+            
             App.loadData(month, year);
             App.loadItemMenuBar();
             Utility.reverseListOfMonth();
@@ -507,9 +518,8 @@ const Pagination = {
 // Inicialização do App com as classes necessárias
 const App = {
     init(){
-        App.loadItemMenuBar();
-        const arrayOrdered = Utility.reverseListOfMonth();
-        App.loadData(arrayOrdered[0].month, arrayOrdered[0].year);
+        // App.loadItemMenuBar();
+        // App.loadData(dataExpenses[0].month, dataExpenses[0].year);
     },
 
     loadItemMenuBar(){
@@ -532,7 +542,7 @@ const App = {
     },
     
     pagination(){
-        const pages = Math.ceil(periodExpense.expenses.length/itemsPerPage);
+        const pages = Math.ceil((periodExpense.expenses.length/itemsPerPage))
         Pagination.clearPagination();
         Pagination.addPagination(pages);
         Pagination.listExpensesByPage(1);
@@ -545,6 +555,7 @@ const App = {
         
         App.pagination();
         dataCard.getDataCurrentMonth(periodExpense);
+        
     },
 }
 
