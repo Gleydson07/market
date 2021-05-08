@@ -1,3 +1,27 @@
+// Alterna a sidebar o modalMonth e o modalExpense entre visíveis e não visíveis
+const Toggle = {
+    toggleMenu(){
+        document
+            .getElementById('sidebar')
+            .classList
+            .toggle('active');
+    },
+
+    toggleModalExpense(){
+        document
+            .querySelector('#container-modal-expense')
+            .classList
+            .toggle('modal-active-expense');
+    },
+
+    toggleModalMonth(){
+        document
+            .querySelector('#container-modal-month')
+            .classList
+            .toggle('modal-active-month');
+    },
+}
+
 // Array de dados
 const dataExpenses = [
     {
@@ -96,7 +120,57 @@ const dataExpenses = [
                 description: "Carne bovina",
                 quantity: 12,
                 price: 2200
-            }
+            },
+            {
+                description: "Papel Higiênico",
+                quantity: 8,
+                price: 150,
+            },
+            {
+                description: "Aromatizante 50ml",
+                quantity: 3,
+                price: 655,
+            },
+            {
+                description: "Sabão em pó",
+                quantity: 6,
+                price: 335,
+            },
+            {
+                description: "Sabão em pedra",
+                quantity: 8,
+                price: 45,
+            },
+            {
+                description: "Água sanitária",
+                quantity: 2,
+                price: 450,
+            },
+            {
+                description: "Papel Higiênico",
+                quantity: 8,
+                price: 150,
+            },
+            {
+                description: "Aromatizante 50ml",
+                quantity: 3,
+                price: 655,
+            },
+            {
+                description: "Sabão em pó",
+                quantity: 6,
+                price: 335,
+            },
+            {
+                description: "Sabão em pedra",
+                quantity: 8,
+                price: 45,
+            },
+            {
+                description: "Água sanitária",
+                quantity: 2,
+                price: 450,
+            },
         ]
     },
     {
@@ -128,6 +202,11 @@ const dataExpenses = [
                 quantity: 2,
                 price: 450,
             },
+            {
+                description: "Leite condensado",
+                quantity: 1,
+                price: 250,
+            },
         ]
     },
 ]
@@ -135,28 +214,55 @@ const dataExpenses = [
 // Período(mês/ano) selecionado para ser exibido na tela
 let periodExpense = [];
 
-// Alterna a sidebar o modalMonth e o modalExpense entre visíveis e não visíveis
-const Toggle = {
-    toggleMenu(){
-        document
-            .getElementById('sidebar')
-            .classList
-            .toggle('active');
+// Formatação de valores e ordenação de arrays
+const Utility = {
+    formatQuantity(quantity){
+        return quantity < 10 ? ("00" + quantity).slice(-2).replace(".",",") : quantity;
     },
 
-    toggleModalExpense(){
-        document
-            .querySelector('#container-modal-expense')
-            .classList
-            .toggle('modal-active-expense');
+    formatCurrencyToSave(currency){
+        return Number(currency)*100;
     },
 
-    toggleModalMonth(){
-        document
-            .querySelector('#container-modal-month')
-            .classList
-            .toggle('modal-active-month');
+    formatCurrency(value){
+        return (value/100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })
     },
+
+    convertMonth(value){
+        const months = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        return months.find((item, index) => index === (Number(value)-1));
+    },
+
+    reverseListOfMonth(){
+        let newArray = [];
+        
+        dataExpenses.map(expense => {
+            newArray.push(
+                String(expense.year)+String(expense.month)
+            )
+        })
+        
+        newArray.sort((beforePosition, afterPosition) => {
+            return afterPosition - beforePosition
+        })
+
+        const ordened = newArray.map(date => {
+            return {
+                year: Number(date.substr(0,4)),
+                month: Number(date.slice(4))
+            }
+        })
+        return ordened;
+    },
+
+    
 }
 
 // Funções para renderizar o conteúdo dos cards
@@ -241,6 +347,7 @@ const Resolve = {
     },
 }
 
+// Preenchimento dos cards
 const dataCard = {
     // Month Card
     currentMonth: document.getElementById('current-month'),
@@ -270,56 +377,7 @@ const dataCard = {
 
 }
 
-const Utility = {
-    formatQuantity(quantity){
-        return quantity < 10 ? ("00" + quantity).slice(-2).replace(".",",") : quantity;
-    },
-
-    formatCurrencyToSave(currency){
-        return Number(currency)*100;
-    },
-
-    formatCurrency(value){
-        return (value/100).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        })
-    },
-
-    convertMonth(value){
-        const months = [
-            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-        ];
-
-        const month = months.find((item, index) => index === (Number(value)-1));
-
-        return month;
-    },
-
-    reverseListOfMonth(){
-        let newArray = [];
-        
-        dataExpenses.map(expense => {
-            newArray.push(
-                String(expense.year)+String(expense.month)
-            )
-        })
-        
-        newArray.sort((beforePosition, afterPosition) => {
-            return afterPosition - beforePosition
-        })
-
-        const ordened = newArray.map(date => {
-            return {
-                year: Number(date.substr(0,4)),
-                month: Number(date.slice(4))
-            }
-        })
-        return ordened;
-    }
-}
-
+// CRUD de despesas
 const orderToExpense = {
     add(data){
         const {month, year, description, quantity, price} = data;
@@ -340,6 +398,7 @@ const orderToExpense = {
 
 }
 
+// CRUD da lista de despesas
 const listOfMonths = {
 
     dataExists(month, year){
@@ -363,6 +422,7 @@ const listOfMonths = {
 
 }
 
+// Manipulação de dados vindos do HTML
 const DOM = {
     expensesContainer: document.querySelector('#body-expenses'),
     sideBarContainer: document.querySelector('#items-sidebar'),
@@ -376,13 +436,14 @@ const DOM = {
         DOM.sideBarContainer.appendChild(a);
     },
 
-    addExpense(expense){
+    addExpense(expense, index){
         const tr = document.createElement('tr');
-        tr.innerHTML = DOM.innerHTMLExpenses(expense);
+        tr.innerHTML = DOM.innerHTMLExpenses(expense, index);
+        tr.dataset = index;
         DOM.expensesContainer.appendChild(tr);
     },
 
-    innerHTMLExpenses(expense){
+    innerHTMLExpenses(expense, index){
         const html = `
             <td>${expense.description}</td>
             <td>${Utility.formatQuantity(expense.quantity)}</td>
@@ -411,6 +472,7 @@ const DOM = {
     },
 }
 
+// Tratamento dos dados do formulário do modal de meses
 const FormMonth = {
     month: document.querySelector('.fieldset #month'),
 
@@ -441,6 +503,7 @@ const FormMonth = {
     }
 }
 
+// Tratamento dos dados do formulário do modal de despesas
 const FormExpense = {
     description: document.querySelector('.fieldset #description'),
     quantity: document.querySelector('.fieldset #quantity'),
@@ -490,35 +553,85 @@ const FormExpense = {
 
 }
 
-const App = {
-    init(){
-        App.loadItemMenuBar();
-        App.loadData(dataExpenses[0].month, dataExpenses[0].year);
+const Pagination = {
+    paginationContainer: document.getElementById('pagination'),
+    currentPage: document.querySelector('#currentPage h4'),
+
+    clearPagination(){
+        Pagination.paginationContainer.innerHTML = "";
+        Pagination.currentPage.innerHTML = "";
     },
 
-    loadItemMenuBar(){        
+    listExpensesByPage(page){
+        DOM.clearExpenses();
+        Pagination.setCurrentPage(page);
+        const firstItem = (page*5)-5; // 1 = 1*5 - 4 = 1
+        const lastItem = (page*5); // 1 = 1*5 = 5  
+        const data = periodExpense.expenses.slice(firstItem, lastItem);
+
+        data.map((expense, index) => {
+            DOM.addExpense(expense, index);
+        })
+    },
+
+    addPagination(numberPages){
+        for(let count = 0; count < numberPages; count++){
+            Pagination.innerHTMLPagination(count+1);
+        }
+    },
+
+    setCurrentPage(page){
+        Pagination.currentPage.innerHTML = page;
+    },
+    
+    innerHTMLPagination(page){
+        const h4 = document.createElement('a');
+        h4.innerHTML = page;
+        h4.setAttribute('onclick', `Pagination.listExpensesByPage(${page})`);
+        Pagination.paginationContainer.appendChild(h4);
+    },
+}
+
+// Inicialização do App com as classes necessárias
+const App = {
+    itemPerPage: 5,
+
+    init(){
+        App.loadItemMenuBar();
+        const arrayOrdered = Utility.reverseListOfMonth();
+        App.loadData(arrayOrdered[0].month, arrayOrdered[0].year);
+    },
+
+    loadItemMenuBar(){
         Utility.reverseListOfMonth().map(element => {
             DOM.addItemsMenuBar(element);
         })
     },
-
+    
     filteredData(month, year){
         dataExpenses.forEach(data => {
             if(data.month === month && data.year === year){
                 periodExpense = data;
             }
         });
-
-        // if(!periodExpense){
-        //     throw new Error("Ainda não existem lançamentos neste mês")
-        // }
-    },
-
-    loadData(month, year){
-        DOM.clearExpenses();   
-        App.filteredData(month, year);
         
-        periodExpense.expenses.forEach(item => DOM.addExpense(item));
+        if(!periodExpense){
+            throw new Error("Ainda não existem lançamentos neste mês")
+        }
+    },
+    
+    pagination(){
+        const pages = Math.ceil(periodExpense.expenses.length/App.itemPerPage);
+        Pagination.clearPagination();
+        Pagination.addPagination(pages);
+        Pagination.listExpensesByPage(1);
+    },
+    
+    loadData(month, year){
+        DOM.clearExpenses();
+        App.filteredData(month, year);
+
+        App.pagination();
         dataCard.getDataCurrentMonth(periodExpense);
     },
 }

@@ -118,7 +118,7 @@ main{
     font-weight: 300;
 }
 
-#new-month a:hover, #container a:hover{
+#new-month a:hover, #container > a:hover{
     background-color: var(--bg-button);
     border-radius: 1rem;
 }
@@ -369,4 +369,51 @@ table tbody tr td:last-child{
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+#dataPagination{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.8rem;
+}
+
+#pagination{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#pagination a{
+    padding: 0.25rem 0.5rem;
+    background-color: var(--bg-sidebar);
+    border: 1px solid #00000033;
+    color: var(--bg-header);
+    margin-left: 0.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 300;
+
+    transition: 0.5s;
+}
+
+#pagination a:hover{
+    border-color: var(--black-light);
+    font-weight: 400;
+}
+
+#currentPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#currentPage p, h4{
+    color: var(--heading);
+    font-weight: 400;
+}
+
+#currentPage h4{
+    margin-left: 0.5rem;
 }
