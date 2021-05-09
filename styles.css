@@ -64,7 +64,7 @@ main{
 }
 
 #sidebar{
-    min-width: 12.5rem;
+    width: 12.5rem;
     
     background-color: var(--bg-sidebar);
     box-shadow: 0px 0px 5px var(--heading);  
@@ -78,8 +78,8 @@ main{
     display: none;
 }
 
-.table-pagination-active{
-    display: none;
+.inactive{
+    visibility: hidden;
 }
 
 @keyframes sidebar-on{
@@ -88,21 +88,26 @@ main{
 }
 
 #new-month{
-    display: inline-block;
-    justify-content: center;
-    align-items: center;
-    text-align: right;
+    display: block;
+    text-align: center;
 }
 
 #new-month h2{
     font-weight: 700;
     font-size: 1.2rem;
-    margin: 0.8rem;
+    margin: 1rem 0 0.5rem;
     color: var(--bg-header);
 }
 
 #new-month a{
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.25rem;
+}
+
+#new-month a span{
     display: flex;
+    margin-right: 0.75rem;
 }
 
 #items-sidebar a{

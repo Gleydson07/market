@@ -1,54 +1,3 @@
-// Alterna a sidebar o modalMonth e o modalExpense entre visíveis e não visíveis
-const Toggle = {
-    toggleMenu(){
-        document
-            .getElementById('sidebar')
-            .classList
-            .toggle('active');
-    },
-
-    toggleModalExpense(){
-        document
-            .querySelector('#container-modal-expense')
-            .classList
-            .toggle('modal-active-expense');
-    },
-
-    toggleModalMonth(){
-        document
-            .querySelector('#container-modal-month')
-            .classList
-            .toggle('modal-active-month');
-    },
-
-    toggleFormAndPagination(hasData){
-        if(!hasData){
-            document
-                .querySelector('#table-pagination')
-                .classList
-                .add('table-pagination-active')
-         }else{
-            document
-            .querySelector('#table-pagination')
-            .classList
-            .remove('table-pagination-active')
-         }
-    },
-}
-
-// Dados no localStorage
-const Storage = {
-    get(){
-        return JSON.parse(localStorage.getItem("@commerce:expenses"))
-    },
-
-    set(expenses){
-        localStorage.setItem("@commerce:expenses", JSON.stringify(expenses));
-    }
-}
-
-// Array de dados
-const dataExpenses = Storage.get();
 
 //[
 //     {
@@ -125,15 +74,26 @@ const dataExpenses = Storage.get();
 // ]
 
 // Itens por página
-const itemsPerPage = 10;
+
 
 // Período(mês/ano) selecionado para ser exibido na tela
-let periodExpense = [];
+
 
 // Formatação de valores e ordenação de arrays
 const Utility = {
-    formatQuantity(quantity){
-        return quantity < 10 ? ("00" + quantity).slice(-2).replace(".",",") : quantity;
+    formatExpenseToTable(expense){
+        return {
+            description: expense.description,
+            quantity: expense.quantity < 10 ? ("00" + expense.quantity).slice(-2).replace(".",",") : expense.quantity,
+            price: (expense.price/100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            }),
+            total: ((expense.price*expense.quantity)/100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            })
+        }
     },
 
     formatCurrencyToSave(currency){
@@ -141,10 +101,7 @@ const Utility = {
     },
 
     formatCurrency(value){
-        return (value/100).toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        })
+        return 
     },
 
     convertMonth(value){
@@ -294,102 +251,23 @@ const dataCard = {
 
 // CRUD de despesas
 const orderToExpense = {
-    validateData(data){
-        const {month, year, description, quantity, price} = data;
 
-        if(description.trim() === "" || !quantity || !price){
-            throw new Error("Favor preencher todos os campos.")
-        }
+    loadExpensesToMonth(){
 
-        if(!month || !year ){
-            throw new Error("Selecione um item válido na aba de movimentações.")
-        }
     },
 
-    add(data){
-        const {month, year, description, quantity, price} = data;
-        orderToExpense.validateData(data);
+    
 
-        dataExpenses.map((item, index) => {
-            if(month === item.month && year === item.year){
-                dataExpenses[index].expenses.push({
-                    description, 
-                    quantity, 
-                    price
-                })
-
-            }
-        })
-        
-        App.loadData(month, year)
-    }
+    
 
 }
 
-// CRUD da lista de despesas
-const listOfMonths = {
-
-    dataExists(month, year){
-        const exists = dataExpenses.find(item => (item.month === month && item.year === year));
-
-        return exists;
-    },
-
-    add(month, year){
-        const exists = listOfMonths.dataExists(month, year);
-
-        if(exists){
-            FormMonth.clearFieldset();
-            throw new Error("O período selecionado já existe")
-        }
-
-        DOM.clearItemsMenuBar();
-        dataExpenses.push({
-            month,
-            year,
-            expenses: []
-        })
-        Storage.set(dataExpenses);
-    }
-
-}
 
 // Manipulação de dados vindos do HTML
 const DOM = {
-    expensesContainer: document.querySelector('#body-expenses'),
-    sideBarContainer: document.querySelector('#items-sidebar'),
-    formExpense: document.getElementById('form-expense'),
     
-    addItemsMenuBar(data){
-        const a = document.createElement(`a`);
-        a.innerHTML = `${Utility.convertMonth(data.month)+' de '+data.year}`;
-        a.setAttribute('href', "#");
-        a.setAttribute('onclick', `App.loadData(${data.month}, ${data.year})`);
-        DOM.sideBarContainer.appendChild(a);
-    },
 
-    addExpense(expense, index){
-        const tr = document.createElement('tr');
-        tr.innerHTML = DOM.innerHTMLExpenses(expense, index);
-        tr.dataset = index;
-        DOM.expensesContainer.appendChild(tr);
-    },
 
-    innerHTMLExpenses(expense, index){
-        const html = `
-            <td>${expense.description}</td>
-            <td>${Utility.formatQuantity(expense.quantity)}</td>
-            <td>${Utility.formatCurrency(expense.price)}</td>
-            <td>${Utility.formatCurrency((expense.price*expense.quantity))}</td>
-            <td>                
-                <a href="#">
-                    <img src="./assets/remove.svg" alt="remover item">
-                </a>
-            </td>
-        `
-
-        return html
-    },
 
     clearExpenses() {
         DOM.expensesContainer.innerHTML = '';
@@ -400,65 +278,13 @@ const DOM = {
     },
 }
 
-// Tratamento dos dados do formulário do modal de meses
-const FormMonth = {
-    month: document.querySelector('.fieldset #month'),
-
-    clearFieldset(){
-        FormMonth.month.value = ""
-    },
-
-    getValues(){
-        const monthAndYear = FormMonth.month.value;
-        const [year, month] = monthAndYear.split('-');
-
-        return { month:Number(month), year:Number(year) }
-    },
-
-    submitMonth(event){        
-        event.preventDefault();
-        try {
-            const {month, year} = FormMonth.getValues();
-            listOfMonths.add(month, year);
-            FormMonth.clearFieldset();
-            Toggle.toggleModalMonth();
-            
-            App.loadData(month, year);
-            App.loadItemMenuBar();
-            Utility.reverseListOfMonth();
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-}
-
 // Tratamento dos dados do formulário do modal de despesas
 const FormExpense = {
-    description: document.querySelector('.fieldset #description'),
-    quantity: document.querySelector('.fieldset #quantity'),
-    price: document.querySelector('.fieldset #price'),
+    
 
-    getValues(){
-        const month = periodExpense.month;
-        const year = periodExpense.year;
-        const description = FormExpense.description.value;
-        const quantity = FormExpense.quantity.value;
-        const price = FormExpense.price.value;
+    
 
-        return {
-            month: Number(month),
-            year: Number(year),
-            description,
-            quantity: Number(quantity),
-            price: Utility.formatCurrencyToSave(Number(price))            
-        }
-    },
 
-    clearFieldset(){
-        FormExpense.description.value = "";
-        FormExpense.quantity.value = "";
-        FormExpense.price.value = "";
-    },
     
     //Listener
     submitExpense(event){
@@ -522,24 +348,8 @@ const App = {
         // App.loadData(dataExpenses[0].month, dataExpenses[0].year);
     },
 
-    loadItemMenuBar(){
-        FormMonth.clearFieldset();
-        Utility.reverseListOfMonth().map(element => {
-            DOM.addItemsMenuBar(element);
-        })
-    },
     
-    filteredData(month, year){
-        dataExpenses.forEach(data => {
-            if(data.month === month && data.year === year){
-                periodExpense = data;
-            }
-        });
-        
-        if(!periodExpense){
-            throw new Error("Ainda não existem lançamentos neste mês")
-        }
-    },
+
     
     pagination(){
         const pages = Math.ceil((periodExpense.expenses.length/itemsPerPage))
