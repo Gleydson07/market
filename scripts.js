@@ -23,24 +23,16 @@ const Toggle = {
             .toggle('modal-active-expense');
     },
 
-    pagination(hasData){
-        if(!hasData){
-            document
-                .querySelector('#table-pagination')
-                .classList
-                .add('table-pagination-active')
-         }else{
-            document
-                .querySelector('#table-pagination')
-                .classList
-                .remove('table-pagination-active')
-         }
+    pagination(){
+        document
+            .querySelector('#table-pagination')
+            .classList
+            .toggle('table-pagination-active')
     },
-
 }
 
 let expenses = [];          // Array de movimentações
-const itemsPerPage = 1;    // Quantidade de items por página
+const itemsPerPage = 10;    // Quantidade de items por página
 let period = [];     // Mês específico de despesas
 
 // Moviment and Expense
@@ -96,6 +88,7 @@ const Utility = {
             throw new Error("Favor informar dados válidos");
         }
         return expenses.find(item => (item.month === month && item.year === year));
+        
     },
 
     monthString(value){
@@ -134,7 +127,7 @@ const Utility = {
         return Number(currency)*100;
     },
     
-    // Cards
+// Cards
     formatQuantity(value){
         return value < 10 ? 
         ("00" + value).slice(-2).replace(".",",") : 
@@ -293,12 +286,6 @@ const modalExpense = {
         }
     },
 
-    // reload(expense){
-    //     Utility.clearTableExpenses();               //Limpa a tabela de despesas
-    //     console.log(expense);             //Exibe a tabela de despesas
-    //     expenseCRUD.loadExpenses(expense.month, expense.year);//Carrega a tabela de despesas
-    // },
-
     submitExpense(event){
         event.preventDefault();
         try {
@@ -327,7 +314,6 @@ const movimentCRUD = {
             DOM.listMoviment(element);
         })
     },
-
 
     add(month, year){
         const exists = Utility.movimentExists(month, year);
@@ -371,25 +357,22 @@ const expenseCRUD = {
     },
 
     loadExpenses(month, year){
-        expenses.forEach(data => {
-            if(data.month === month && data.year === year){
-                period = data;
-            }
-        });
-
-        if(!period){
-            throw new Error("Ainda não existem lançamentos neste mês")
-        }
         
+        DOM.clearPagination();
+        period = Utility.movimentExists(month, year);
+
+        const pages = Math.ceil(period.expenses.length/itemsPerPage)
+        DOM.addPagination(pages);
+
         DOM.hiddenTable(period.expenses);
         Utility.clearTableExpenses();
-        DOM.dataCard();
-        period.expenses.map((item, index) => DOM.addExpenseToTable(item, index));
+        DOM.dataCard();        
+
+        DOM.listExpenseToPages(1);
     }
 }
 
 // Moviment and Expense
-
 const DOM = {
     // Moviment
     sideBarContainer: document.querySelector('#items-sidebar'),
@@ -426,12 +409,12 @@ const DOM = {
                 .querySelector('#table-pagination')
                 .classList
                 .add('inactive')
-            }else{
+        }else{
             document
                 .querySelector('#table-pagination')
                 .classList
                 .remove('inactive')
-            }
+        }
     },
 
     addExpenseToTable(expense, index){
@@ -492,15 +475,15 @@ const DOM = {
         DOM.currentPage.innerHTML = "";
     },
 
-    listPages(page){
+    listExpenseToPages(page){
         DOM.setCurrentPage(page);
         const firstItem = (page*itemsPerPage)-itemsPerPage; // 1 = 1*5 - 4 = 1
         const lastItem = (page*itemsPerPage); // 1 = 1*5 = 5  
         const data = period.expenses.slice(firstItem, lastItem);
 
+        Utility.clearTableExpenses();
         data.map((expense, index) => {
-            console.log(expense)
-            expenseCRUD.loadExpenses(expense, index);
+            DOM.addExpenseToTable(expense, index);
         })
     },
 
@@ -517,7 +500,7 @@ const DOM = {
     innerHTMLPagination(page){
         const a = document.createElement('a');
         a.innerHTML = page;       
-        a.setAttribute('onclick', `DOM.listPages(${page})`);
+        a.setAttribute('onclick', `DOM.listExpenseToPages(${page})`);
         DOM.paginationContainer.appendChild(a);
     },
 }
@@ -528,15 +511,9 @@ const App = {
         expenses = Storage.get();
         period = Utility.ordened()[0];
         if(expenses.length > 0){
-            modalMoviment.reload(expenses);
+            modalMoviment.reload(expenses);             //Carrega as movimentações
             expenseCRUD.loadExpenses(period.month, period.year);
             DOM.dataCard();
-            // console.log(period)
-            // Toggle.pagination(period.expenses.length);
-            // const pages = Math.ceil(period.expenses.length/itemsPerPage)
-            // DOM.clearPagination();
-            // DOM.addPagination(pages);
-            DOM.listPages(1);
         }
     },
 }

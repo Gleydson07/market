@@ -52,6 +52,10 @@ header{
     align-items: center;
     height: 4rem; 
     background-color: var(--bg-header);
+
+    position: fixed;
+    z-index: 5;
+    width: 100%;
 }
 
 header h1{
@@ -65,12 +69,17 @@ main{
 
 #sidebar{
     width: 12.5rem;
+    margin-top: 4rem;
     
     background-color: var(--bg-sidebar);
     box-shadow: 0px 0px 5px var(--heading);  
     
     animation: sidebar-on;
     animation-duration: 1s;
+
+    position: fixed;
+    z-index: 10;
+    height: calc(100vh - 9rem);
 }
 
 
@@ -138,7 +147,7 @@ main{
     font-weight: 300;
 }
 
-#new-month a:hover, #container > a:hover{
+#new-month a:hover, #container #buy:hover{
     background-color: var(--bg-button);
     border-radius: 1rem;
 }
@@ -163,7 +172,7 @@ main{
 #container{
     min-height: calc(100vh - 9rem);
     max-height: calc(100vh - 9rem);
-    margin: 0 auto;
+    margin: 4rem auto 0;
 }
 
 #sections{
@@ -175,7 +184,8 @@ main{
 
 .card{
     height: 12.8rem;
-    width: 22rem;
+    width: 48%;
+    min-width: 22rem;
 
     padding: 0.625rem;
     margin-bottom: 10px;
@@ -468,12 +478,15 @@ table tbody tr td:last-child{
 }
 
 footer{
-    background-color: #00000033;
+    background-color: #d4d1d1;
     min-height: 5rem;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    position: fixed;
+    min-width: 100%;
 }
 
 footer h4{
@@ -481,5 +494,5 @@ footer h4{
     text-align: center;
     align-items: center;
 
-    color: var(--bg-sidebar);
+    color: #818080;
 }
