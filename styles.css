@@ -338,7 +338,7 @@ table tbody tr td:last-child{
 /* ==================== MODAL */
 .container-modal{
     position: absolute;
-    z-index: 2;
+    z-index: 20;
     top: 0;
 
     width: 100%;

@@ -107,6 +107,7 @@ const Utility = {
 
     formatExpenseToTable(expense){
         const data ={
+            id: expense.id,
             description: expense.description,
             quantity: expense.quantity < 10 ? 
                 ("00" + expense.quantity).slice(-2).replace(".",",") : 
@@ -321,6 +322,7 @@ const movimentCRUD = {
             throw new Error("O período selecionado já existe")
         }
         period = {
+            id: expenses.length,
             month,
             year,
             expenses: []
@@ -346,12 +348,36 @@ const expenseCRUD = {
         expenses.map((item, index) => {
             if(month === item.month && year === item.year){
                 expenses[index].expenses.push({
+                    id: item.expenses.length,
                     description, 
                     quantity, 
                     price
                 })
             }
         })
+
+        Storage.set(expenses)
+    },
+
+    remove(id){
+        let indexItem = 0;
+        period.expenses.find((element, index) => {
+            if(element.id === id)
+                indexItem = index;
+        })
+        expenses.map((item, index) => {
+            if(period.month === item.month && period.year === item.year){
+                expenses[index].expenses.splice(indexItem, 1)
+
+                Utility.movimentExists(item.month, item.year);
+            }
+        })
+        DOM.hiddenTable(period.expenses);                   //Exibe a tabela de despesas
+        DOM.dataCard();                             //Carrega dados para o card
+        Utility.clearTableExpenses();               //Limpa a tabela de despesas
+        expenseCRUD.loadExpenses(period.month, period.year);//Carrega a tabela de despesas
+
+
 
         Storage.set(expenses)
     },
@@ -425,14 +451,14 @@ const DOM = {
     },
 
     innerHTMLExpenses(expense, index){
-        const {description, quantity, price, total} = Utility.formatExpenseToTable(expense)
+        const {description, quantity, price, total} = Utility.formatExpenseToTable(expense);
         const html = `
             <td>${description}</td>
             <td>${quantity}</td>
             <td>${price}</td>
             <td>${total}</td>
             <td>                
-                <a href="#">
+                <a href="#" onclick="expenseCRUD.remove(${expense.id})">
                     <img src="./assets/remove.svg" alt="remover item">
                 </a>
             </td>
