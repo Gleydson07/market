@@ -1,6 +1,5 @@
-// // Alterna a sidebar o modalMoviment e o modalExpense entre visíveis e não visíveis
+// Alterna a sidebar o modalMoviment e o modalExpense entre visíveis e não visíveis
 const Toggle = {
-
 //Movimentation
     lateralMenu(){
         document
@@ -45,6 +44,33 @@ const Storage = {
 // Moviment and Expense
 // Formatação de valores e ordenação de arrays
 const Utility = {
+    ordened(){
+        let newArray = [];
+        
+        expenses.map(expense => {
+            month = expense.month < 10 ? 
+                ("00" + expense.month).slice(-2).replace(".",",") : 
+                expense.month;
+            newArray.push(
+                String(expense.year)+String(month)
+            )
+        })
+        
+        newArray.sort((beforePosition, afterPosition) => {
+            return afterPosition - beforePosition
+        })
+        
+        
+        const ordened = newArray.map(date => {
+            return {
+                year: Number(date.substr(0,4)),
+                month: Number(date.slice(4)),
+            }
+        })
+
+        return ordened;
+    },
+
 // Moviment
     clearListMoviment() {
         DOM.sideBarContainer.innerHTML = '';
@@ -72,6 +98,24 @@ const Utility = {
         DOM.expensesContainer.innerHTML = '';
     },
 
+    formatExpenseToTable(expense){
+        const data ={
+            description: expense.description,
+            quantity: expense.quantity < 10 ? 
+                ("00" + expense.quantity).slice(-2).replace(".",",") : 
+                expense.quantity,
+            price: (expense.price/100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            }),
+            total: ((expense.price*expense.quantity)/100).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            })
+        }
+        return data;        
+    },
+
     formatCurrencyToSave(currency){
         return Number(currency)*100;
     },
@@ -94,14 +138,26 @@ const modalMoviment = {
         return { month:Number(month), year:Number(year) }
     },
 
-    submitMoviment(event){        
+    reload(expense){
+        Utility.clearListMoviment();    //Limpa a lista de movimentações
+        DOM.hiddenContainer(expense);   //Exibe o container com cads e botão de adição
+        movimentCRUD.loadMoviment();    //Carrega a lista de movimentações
+    },
+
+    submitMoviment(event){ 
         event.preventDefault();
         try {
-            const {month, year} = modalMoviment.getValues();
-            MovimentCRUD.add(month, year);
-            modalMoviment.clearModalItems();
-            Toggle.modalMoviment();            
+            const expense = modalMoviment.getValues(); //Recebe os valores dos modais
+            movimentCRUD.add(expense.month, expense.year);  //Adiciona movimentação ao array
+            Toggle.modalMoviment();         //Esconde o modal de movimentações
+            Utility.clearTableExpenses();   //Limpa a tabela de despesas
+            Utility.clearListMoviment();    //Limpa a lista de movimentações
+            modalMoviment.clearModalItems();//Limpra o modal de movimentações
+            DOM.hiddenContainer(expense);   //Exibe o container com cads e botão de adição
+            movimentCRUD.loadMoviment();    //Carrega a lista de movimentações
+            expenseCRUD.loadExpenses(expense.month, expense.year);//Carrega a tabela de despesas
         } catch (error) {
+            modalMoviment.clearModalItems();
             alert(error.message);
         }
     }
@@ -135,115 +191,36 @@ const modalExpense = {
         }
     },
 
+    reload(expense){
+        Utility.clearTableExpenses();               //Limpa a tabela de despesas
+        console.log(expense);             //Exibe a tabela de despesas
+        expenseCRUD.loadExpenses(expense.month, expense.year);//Carrega a tabela de despesas
+    },
+
     submitExpense(event){
         event.preventDefault();
         try {
-            expenseCRUD.add(modalExpense.getValues());
-            modalExpense.clearModalItems();
-            Toggle.modalExpense();
+            const expense = modalExpense.getValues();   //Recebe os valores dos modais
+            expenseCRUD.add(expense);                   //Adiciona despesas ao array                
+            Toggle.modalExpense();                      //Esconde o modal de despesas
+            modalExpense.clearModalItems();             //Limpa o modal de despesas
+            Utility.clearTableExpenses();               //Limpa a tabela de despesas
+            DOM.hiddenTable(expense);                   //Exibe a tabela de despesas
+            expenseCRUD.loadExpenses(expense.month, expense.year);//Carrega a tabela de despesas
         } catch (error) {
+            modalExpense.clearModalItems();
             alert(error.message)
         }
     },
 
 }
 
-// Moviment and Expense
-// Manipulação de dados vindos do HTML
-const DOM = {
-// Moviment
-    sideBarContainer: document.querySelector('#items-sidebar'),
-    
-    listMoviment(data){
-        const a = document.createElement(`a`);
-        a.innerHTML = `${Utility.monthString(data.month)+' de '+data.year}`;
-        a.setAttribute('href', "#");
-        a.setAttribute('onclick', `expenseCRUD.findExpense(${data.month}, ${data.year})`);
-        DOM.sideBarContainer.appendChild(a);
-    },
-
-// Expense
-    expensesContainer: document.querySelector('#body-expenses'),
-    formExpense: document.getElementById('form-expense'),
-    
-    hiddenContainer(data){
-        if(data.length === 0){
-            document
-                .querySelector('#sections-buy')
-                .classList
-                .add('inactive')
-         }else{
-            document
-                .querySelector('#sections-buy')
-                .classList
-                .remove('inactive')
-         }
-    },
-
-    hiddenTable(data){
-        if(data.expenses.length === 0){
-            document
-                .querySelector('#table-pagination')
-                .classList
-                .add('inactive')
-         }else{
-            document
-                .querySelector('#table-pagination')
-                .classList
-                .remove('inactive')
-         }
-    },
-
-    addExpenseToTable(expense, index){
-        const tr = document.createElement('tr');
-        tr.innerHTML = DOM.innerHTMLExpenses(expense, index);
-        tr.dataset = index;
-        DOM.expensesContainer.appendChild(tr);
-    },
-
-    innerHTMLExpenses(expense, index){
-        const {description, quantity, price, total} = Utility.formatExpenseToTable(expense)
-        const html = `
-            <td>${description}</td>
-            <td>${quantity}</td>
-            <td>${price}</td>
-            <td>${total}</td>
-            <td>                
-                <a href="#">
-                    <img src="./assets/remove.svg" alt="remover item">
-                </a>
-            </td>
-        `
-
-        return html
-    },
-}
-
 // Moviment
 // CRUD da lista de despesas
-const MovimentCRUD = {
+const movimentCRUD = {
 
-    loadMonths(){
-        let newArray = [];
-
-        expenses.map(expense => {
-            newArray.push(
-                String(expense.year)+String(expense.month)
-            )
-        })
-        
-        newArray.sort((beforePosition, afterPosition) => {
-            return afterPosition - beforePosition
-        })
-
-        const ordened = newArray.map(date => {
-            return {
-                year: Number(date.substr(0,4)),
-                month: Number(date.slice(4))
-            }
-        })
-        
-        ordened.map(element => {
+    loadMoviment(){
+        Utility.ordened().map(element => {
             DOM.listMoviment(element);
         })
     },
@@ -252,37 +229,20 @@ const MovimentCRUD = {
     add(month, year){
         const exists = Utility.movimentExists(month, year);
         if(exists){
-            modalMoviment.clearModalItems();
             throw new Error("O período selecionado já existe")
         }
-
-        expenses.push({
+        period = {
             month,
             year,
             expenses: []
-        })
-
-        Utility.clearListMoviment();
+        }
+        expenses.push(period)
         Storage.set(expenses);
-        App.reload();
     }
 
 }
 
 const expenseCRUD = {
-
-    findExpense(month, year){
-        expenses.forEach(data => {
-            if(data.month === month && data.year === year){
-                period = data;
-            }
-        });
-
-        if(!period){
-            throw new Error("Ainda não existem lançamentos neste mês")
-        }
-    },
-
     add(data){
         const {month, year, description, quantity, price} = data;
         
@@ -303,37 +263,108 @@ const expenseCRUD = {
                 })
             }
         })
-        Storage.set(expenses)        
-        App.reload()
+
+        Storage.set(expenses)
     },
 
-    loadExpenses(data){
-        data.expenses.map(item => DOM.addExpenseToTable(item));
+    loadExpenses(month, year){
+        expenses.forEach(data => {
+            if(data.month === month && data.year === year){
+                period = data;
+            }
+        });
+
+        if(!period){
+            throw new Error("Ainda não existem lançamentos neste mês")
+        }
+        
+        DOM.hiddenTable(period.expenses);
+        Utility.clearTableExpenses();
+        period.expenses.map((item, index) => DOM.addExpenseToTable(item, index));
     }
 
+}
+
+// Moviment and Expense
+
+const DOM = {
+    // Moviment
+        sideBarContainer: document.querySelector('#items-sidebar'),
+        
+        listMoviment(data){
+            const a = document.createElement(`a`);
+            a.innerHTML = `${Utility.monthString(data.month)+' de '+data.year}`;
+            a.setAttribute('href', "#");
+            a.setAttribute('onclick', `expenseCRUD.loadExpenses(${data.month}, ${data.year})`);
+            DOM.sideBarContainer.appendChild(a);
+        },
+    
+    // Expense
+        expensesContainer: document.querySelector('#body-expenses'),
+        formExpense: document.getElementById('form-expense'),
+        
+        hiddenContainer(data){
+            if(data.length === 0){
+                document
+                    .querySelector('#sections-buy')
+                    .classList
+                    .add('inactive')
+             }else{
+                document
+                    .querySelector('#sections-buy')
+                    .classList
+                    .remove('inactive')
+             }
+        },
+    
+        hiddenTable(data){
+            if(data.length === 0){
+                document
+                    .querySelector('#table-pagination')
+                    .classList
+                    .add('inactive')
+             }else{
+                document
+                    .querySelector('#table-pagination')
+                    .classList
+                    .remove('inactive')
+             }
+        },
+    
+        addExpenseToTable(expense, index){
+            const tr = document.createElement('tr');
+            tr.innerHTML = DOM.innerHTMLExpenses(expense, index);
+            tr.dataset = index;
+            DOM.expensesContainer.appendChild(tr);
+        },
+    
+        innerHTMLExpenses(expense, index){
+            const {description, quantity, price, total} = Utility.formatExpenseToTable(expense)
+            const html = `
+                <td>${description}</td>
+                <td>${quantity}</td>
+                <td>${price}</td>
+                <td>${total}</td>
+                <td>                
+                    <a href="#">
+                        <img src="./assets/remove.svg" alt="remover item">
+                    </a>
+                </td>
+            `
+            return html
+        },
 }
 
 // Inicialização do App com as classes necessárias
 const App = {
     init(){
         expenses = Storage.get();
-        DOM.hiddenContainer(expenses);
+        period = Utility.ordened()[0];
         if(expenses.length > 0){
-            expenseCRUD.findExpense(expenses[0].month, expenses[0].year);
-            MovimentCRUD.loadMonths();
+            modalMoviment.reload(expenses);
+            expenseCRUD.loadExpenses(period.month, period.year)
         }
     },
-    
-    reload(){
-        expenses = Storage.get();
-        DOM.hiddenContainer(expenses);
-        if(expenses){
-            Utility.clearListMoviment();
-            Toggle.modalMoviment()
-            MovimentCRUD.loadMonths();
-            expenseCRUD.loadExpenses(period);
-        }
-    }
 }
 
 App.init();
