@@ -1,6 +1,10 @@
 # market
 Este projeto tem por finalidade lançar as despesas em um determinado mês e fazer um comparativo em relação aos meses anteriores, desenvolvi usando como referência o aplicativo dev.finances criado pelo Mayk Brito no evento maratona discover da Rocketseat.
 
+Responsivo            |  Web
+:-------------------------:|:-------------------------:
+![](./assets/responsive.png)  |  ![](./assets/market.png)
+
 #### Usabilidade
 ###### Menu
 Ao clicar no menu inicial uma sidebar é apresentada, nela existem os meses cadastrados e o botão para adiçao de um novo mês pera registro de despesas. 
@@ -24,7 +28,3 @@ Listagem das despesas adicionadas, cada uma com um botão para sua remoção
 - Paginação (pura, sem library),
 - Responsividade,
 - Animação
-
-Responsivo            |  Web
-:-------------------------:|:-------------------------:
-![](./assets/responsive.png)  |  ![](./assets/market.png)
